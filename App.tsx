@@ -1,15 +1,15 @@
+import './global.css';
 import 'react-native-reanimated'; // ensure this is at the top
 import 'react-native-gesture-handler';
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import TakeOrder from './Components/TakeOrder';
-import Menu from './Components/Menu';
-import OrderHistory from './Components/OrderHistory';
-import Sales from './Components/Sales';
+import TakeOrder from './Components/Tabs/TakeOrder';
+import Menu from './Components/Tabs/Menu';
+import OrderHistory from './Components/Tabs/OrderHistory';
+import Sales from './Components/Tabs/Sales';
 
 const Tab = createBottomTabNavigator();
 
