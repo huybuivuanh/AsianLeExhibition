@@ -7,5 +7,14 @@ declare global {
     price?: number;
   };
 
-  // you can add other global types/interfaces here
+  type Order = {
+    id?: string;
+    itemIDs: string[];
+    total: number;
+  };
+
+  type OrderState = {
+    items: MenuItem[];
+    total: number;
+  };
 }
