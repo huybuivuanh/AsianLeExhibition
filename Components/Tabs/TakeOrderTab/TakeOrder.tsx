@@ -3,7 +3,8 @@ import { View, Text, FlatList, Button } from 'react-native';
 import { Alert } from 'react-native';
 import { subscribeToMenuItems } from '../../../DataManagement/DataManager';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../Redux/store';
 import { addItem } from '../../../Redux/OrderSlice';
 
 const TakeOrder = ({
@@ -15,6 +16,9 @@ const TakeOrder = ({
   const [loading] = useState(false);
 
   const dispatch = useDispatch();
+  const numberOfItems = useSelector(
+    (state: RootState) => state.order.numberOfItems,
+  );
 
   useEffect(() => {
     const unsubscribe = subscribeToMenuItems(
@@ -39,7 +43,6 @@ const TakeOrder = ({
               title="+"
               onPress={() => {
                 dispatch(addItem(item));
-                Alert.alert(`Added ${item.name} to current order`);
               }}
             />
           </View>
@@ -50,7 +53,7 @@ const TakeOrder = ({
         }
       />
       <Button
-        title="Cart"
+        title={`Cart (${numberOfItems})`}
         onPress={() => {
           navigation.navigate('Cart');
         }}

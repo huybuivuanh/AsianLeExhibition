@@ -8,7 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { Provider } from 'react-redux';
-import { store } from './Redux/store';
+import { store } from './Redux/Store';
 
 import TakeOrder from './Components/Tabs/TakeOrderTab/TakeOrder';
 import Cart from './Components/Tabs/TakeOrderTab/Cart';

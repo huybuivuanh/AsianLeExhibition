@@ -5,16 +5,26 @@ declare global {
     id?: string;
     name: string;
     price?: number;
+    created?: string;
+  };
+
+  type OrderItem = {
+    id?: string;
+    name: string;
+    price: number;
+    quantity: number;
   };
 
   type Order = {
     id?: string;
-    itemIDs: string[];
+    items: OrderItem[];
     total: number;
+    created?: string;
   };
 
   type OrderState = {
-    items: MenuItem[];
+    items: OrderItem[];
     total: number;
+    numberOfItems: number;
   };
 }

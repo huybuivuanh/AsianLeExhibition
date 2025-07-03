@@ -2,7 +2,6 @@ import {
   getFirestore,
   collection,
   addDoc,
-  serverTimestamp,
   onSnapshot,
   deleteDoc,
   doc,
@@ -21,7 +20,7 @@ export async function addMenuItem(item) {
     await addDoc(menuItemsCollection, {
       name: item.name,
       price: item.price,
-      time: serverTimestamp(),
+      created: new Date().toISOString(),
     });
     Alert.alert('Success', 'Menu item added!');
   } catch (error) {
@@ -95,13 +94,21 @@ export function subscribeToCurrentOrders(onUpdate, onError) {
 }
 
 // Add a new menu item to the 'menuItems' collection
-export async function addCurrentOrder(order) {
+export async function submitCurrentOrder(order) {
   const currentOrdersCollection = collection(db, 'currentOrders');
+
+  // Extract item IDs and total from the order
+  const itemIDs = order.items.map(item => item.id);
+  const itemQuantities = order.items.reduce((acc, item) => {
+    acc[item.id] = item.quantity;
+    return acc;
+  }, {});
   try {
     await addDoc(currentOrdersCollection, {
-      itemIDs: order.itemIDs,
+      itemIDs: itemIDs,
+      itemQuantities: itemQuantities,
       total: order.total,
-      time: serverTimestamp(),
+      created: new Date().toISOString(),
     });
     Alert.alert('Success', 'Current order added!');
   } catch (error) {
