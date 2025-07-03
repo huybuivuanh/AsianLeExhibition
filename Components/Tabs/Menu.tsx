@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View, Button, FlatList, TextInput, Alert } from 'react-native';
 import {
   addMenuItem,
+  deleteMenuItem,
   subscribeToMenuItems,
 } from '../../DataManagement/DataManager';
 
@@ -17,7 +18,6 @@ const Menu = () => {
       (error: any) => Alert.alert('Failed to fetch menu items', error),
     );
 
-    // Clean up listener on unmount
     return () => unsubscribe();
   }, []);
 
@@ -34,7 +34,6 @@ const Menu = () => {
       });
       setNewItemName('');
       setNewItemPrice('');
-      // No need to manually reload items; onSnapshot will update automatically
     } catch (error) {
       console.error('Failed to add menu item:', error);
       Alert.alert('Error', 'Failed to add menu item');
@@ -44,22 +43,34 @@ const Menu = () => {
 
   return (
     <View className="flex-1 p-5">
-      <Text className="text-2xl font-bold mb-4">Menu Screen</Text>
-
       <FlatList
         data={menuItems}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
-          <View className="py-2 border-b border-gray-200">
+          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
             <Text className="text-base">
               {item.name} - ${item.price}
             </Text>
+            <Button
+              title="X"
+              color="red"
+              onPress={async () => {
+                setLoading(true);
+                try {
+                  await deleteMenuItem(item.id);
+                  Alert.alert('Success', 'Menu item deleted successfully');
+                } catch (error) {
+                  console.error('Failed to delete menu item:', error);
+                  Alert.alert('Error', 'Failed to delete menu item');
+                }
+                setLoading(false);
+              }}
+            />
           </View>
         )}
         refreshing={loading}
-        onRefresh={() => {}} // no manual refresh needed; using realtime updates
         ListEmptyComponent={
-          <Text className="text-gray-500">No menu items found.</Text>
+          <Text className="text-gray-500">Menu Is Empty.</Text>
         }
       />
 

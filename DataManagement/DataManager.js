@@ -4,6 +4,8 @@ import {
   addDoc,
   serverTimestamp,
   onSnapshot,
+  deleteDoc,
+  doc,
 } from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
 
@@ -34,10 +36,10 @@ export function subscribeToMenuItems(onUpdate, onError) {
     menuItemsCollection,
     querySnapshot => {
       const menuItems = [];
-      querySnapshot.forEach(doc => {
+      querySnapshot.forEach(docSnap => {
         menuItems.push({
-          id: doc.id,
-          ...doc.data(),
+          id: docSnap.id,
+          ...docSnap.data(),
         });
       });
       onUpdate(menuItems);
@@ -49,4 +51,16 @@ export function subscribeToMenuItems(onUpdate, onError) {
   );
 
   return unsubscribe;
+}
+
+// Delete a menu item by its document ID
+export async function deleteMenuItem(itemId) {
+  try {
+    const itemDoc = doc(db, 'menuItems', itemId);
+    await deleteDoc(itemDoc);
+    Alert.alert('Success', 'Menu item deleted!');
+  } catch (error) {
+    Alert.alert('Failed to delete menu item', error.message);
+    throw error;
+  }
 }
