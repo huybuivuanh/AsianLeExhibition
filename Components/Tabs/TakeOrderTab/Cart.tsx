@@ -14,7 +14,7 @@ const Cart = () => {
   return (
     <View className="flex-1 p-5">
       {currentOrderItems.length === 0 ? (
-        <Text className="text-gray-500">Your cart is empty.</Text>
+        <Text className="text-gray-500">Cart is empty.</Text>
       ) : (
         <FlatList
           data={currentOrderItems}
@@ -39,8 +39,9 @@ const Cart = () => {
           )}
         />
       )}
-
-      <Button title={`Submit - Total: $${total}`} onPress={() => {}} />
+      {currentOrderItems.length > 0 && (
+        <Button title={`Submit - Total: $${total}`} onPress={() => {}} />
+      )}
     </View>
   );
 };

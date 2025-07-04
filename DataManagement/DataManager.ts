@@ -14,7 +14,7 @@ const db = getFirestore();
 // Menu Items Management
 
 // Add a new menu item to the 'menuItems' collection
-export async function addMenuItem(item) {
+export async function addMenuItem(item: { name: string; price: number }) {
   const menuItemsCollection = collection(db, 'menuItems');
   try {
     await addDoc(menuItemsCollection, {
@@ -24,35 +24,35 @@ export async function addMenuItem(item) {
     });
     Alert.alert('Success', 'Menu item added!');
   } catch (error) {
-    Alert.alert('Failed to add menu item', error.message);
+    Alert.alert('Failed to add menu item');
     throw error;
   }
 }
 
 // Delete a menu item by its document ID
-export async function deleteMenuItem(itemId) {
+export async function deleteMenuItem(itemId: string) {
   try {
     const itemDoc = doc(db, 'menuItems', itemId);
     await deleteDoc(itemDoc);
     Alert.alert('Success', 'Menu item deleted!');
   } catch (error) {
-    Alert.alert('Failed to delete menu item', error.message);
+    Alert.alert('Failed to delete menu item');
     throw error;
   }
 }
 
 // Subscribe to realtime updates of menu items
-export function subscribeToMenuItems(onUpdate, onError) {
+export function subscribeToMenuItems(onUpdate: any, onError: any) {
   const menuItemsCollection = collection(db, 'menuItems');
 
   const unsubscribe = onSnapshot(
     menuItemsCollection,
     querySnapshot => {
-      const menuItems = [];
+      const menuItems: MenuItem[] = [];
       querySnapshot.forEach(docSnap => {
         menuItems.push({
+          ...(docSnap.data() as MenuItem),
           id: docSnap.id,
-          ...docSnap.data(),
         });
       });
       onUpdate(menuItems);
@@ -69,17 +69,17 @@ export function subscribeToMenuItems(onUpdate, onError) {
 // Current Orders Management
 
 // Subscribe to realtime updates of current orders
-export function subscribeToCurrentOrders(onUpdate, onError) {
+export function subscribeToCurrentOrders(onUpdate: any, onError: any) {
   const currentOrdersCollection = collection(db, 'currentOrders');
 
   const unsubscribe = onSnapshot(
     currentOrdersCollection,
     querySnapshot => {
-      const currentOrders = [];
+      const currentOrders: Order[] = [];
       querySnapshot.forEach(docSnap => {
         currentOrders.push({
+          ...(docSnap.data() as Order),
           id: docSnap.id,
-          ...docSnap.data(),
         });
       });
       onUpdate(currentOrders);
@@ -94,15 +94,20 @@ export function subscribeToCurrentOrders(onUpdate, onError) {
 }
 
 // Add a new menu item to the 'menuItems' collection
-export async function submitCurrentOrder(order) {
+export async function submitCurrentOrder(order: Order) {
   const currentOrdersCollection = collection(db, 'currentOrders');
 
   // Extract item IDs and total from the order
   const itemIDs = order.items.map(item => item.id);
-  const itemQuantities = order.items.reduce((acc, item) => {
-    acc[item.id] = item.quantity;
-    return acc;
-  }, {});
+  const itemQuantities = order.items.reduce(
+    (acc: { [key: string]: number }, item) => {
+      if (item.id !== undefined) {
+        acc[item.id] = item.quantity;
+      }
+      return acc;
+    },
+    {},
+  );
   try {
     await addDoc(currentOrdersCollection, {
       itemIDs: itemIDs,
@@ -112,19 +117,19 @@ export async function submitCurrentOrder(order) {
     });
     Alert.alert('Success', 'Current order added!');
   } catch (error) {
-    Alert.alert('Failed to add current order', error.message);
+    Alert.alert('Failed to add current order');
     throw error;
   }
 }
 
 // Delete a current order by its document ID
-export async function deleteCurrentOrder(orderId) {
+export async function deleteCurrentOrder(orderId: string) {
   try {
     const orderDoc = doc(db, 'currentOrders', orderId);
     await deleteDoc(orderDoc);
     Alert.alert('Success', 'Current order deleted!');
   } catch (error) {
-    Alert.alert('Failed to delete current order', error.message);
+    Alert.alert('Failed to delete current order');
     throw error;
   }
 }
