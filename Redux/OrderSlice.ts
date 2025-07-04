@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const initialState: OrderState = {
+const initialOrder: Order = {
   items: [],
   total: 0,
   numberOfItems: 0,
@@ -8,7 +8,7 @@ const initialState: OrderState = {
 
 export const orderSlice = createSlice({
   name: 'order',
-  initialState,
+  initialState: initialOrder,
   reducers: {
     addItem: (state, action: PayloadAction<MenuItem>) => {
       // Check if the item already exists in the order

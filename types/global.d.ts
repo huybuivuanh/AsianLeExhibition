@@ -19,12 +19,7 @@ declare global {
     id?: string;
     items: OrderItem[];
     total: number;
-    created?: string;
-  };
-
-  type OrderState = {
-    items: OrderItem[];
-    total: number;
     numberOfItems: number;
+    created?: string;
   };
 }

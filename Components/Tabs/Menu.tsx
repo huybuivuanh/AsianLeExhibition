@@ -1,25 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Text, View, Button, FlatList, TextInput, Alert } from 'react-native';
-import {
-  addMenuItem,
-  deleteMenuItem,
-  subscribeToMenuItems,
-} from '../../DataManagement/DataManager';
+import { addMenuItem, deleteMenuItem } from '../../DataManagement/DataManager';
+import { RootState } from '../../Redux/Store';
+import { useSelector } from 'react-redux';
 
 const Menu = () => {
-  const [menuItems, setMenuItems] = useState([] as MenuItem[]);
+  const menuItems = useSelector(
+    (state: RootState) => state.menu.items as MenuItem[],
+  );
   const [newItemName, setNewItemName] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = subscribeToMenuItems(
-      (items: React.SetStateAction<MenuItem[]>) => setMenuItems(items),
-      (error: any) => Alert.alert('Failed to fetch menu items', error),
-    );
-
-    return () => unsubscribe();
-  }, []);
 
   const handleAddMenuItem = async () => {
     if (!newItemName.trim()) {

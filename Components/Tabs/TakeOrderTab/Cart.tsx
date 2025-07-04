@@ -3,21 +3,19 @@ import { View, Text, FlatList, Button } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { addItem, removeItem } from '../../../Redux/OrderSlice';
 import { RootState } from '../../../Redux/store';
+import { submitCurrentOrder } from '../../../DataManagement/DataManager';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const currentOrderItems = useSelector(
-    (state: RootState) => state.order.items,
-  );
-  const total = useSelector((state: RootState) => state.order.total);
+  const order = useSelector((state: RootState) => state.order);
 
   return (
     <View className="flex-1 p-5">
-      {currentOrderItems.length === 0 ? (
+      {order.items.length === 0 ? (
         <Text className="text-gray-500">Cart is empty.</Text>
       ) : (
         <FlatList
-          data={currentOrderItems}
+          data={order.items}
           keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={({ item }) => (
             <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
@@ -39,8 +37,13 @@ const Cart = () => {
           )}
         />
       )}
-      {currentOrderItems.length > 0 && (
-        <Button title={`Submit - Total: $${total}`} onPress={() => {}} />
+      {order.items.length > 0 && (
+        <Button
+          title={`Submit - Total: $${order.total}`}
+          onPress={() => {
+            submitCurrentOrder(order);
+          }}
+        />
       )}
     </View>
   );

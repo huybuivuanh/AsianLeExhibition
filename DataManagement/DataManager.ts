@@ -93,12 +93,11 @@ export function subscribeToCurrentOrders(onUpdate: any, onError: any) {
   return unsubscribe;
 }
 
-// Add a new menu item to the 'menuItems' collection
+// Submit the current order to the 'currentOrders' collection
 export async function submitCurrentOrder(order: Order) {
   const currentOrdersCollection = collection(db, 'currentOrders');
 
   // Extract item IDs and total from the order
-  const itemIDs = order.items.map(item => item.id);
   const itemQuantities = order.items.reduce(
     (acc: { [key: string]: number }, item) => {
       if (item.id !== undefined) {
@@ -110,8 +109,7 @@ export async function submitCurrentOrder(order: Order) {
   );
   try {
     await addDoc(currentOrdersCollection, {
-      itemIDs: itemIDs,
-      itemQuantities: itemQuantities,
+      quantities: itemQuantities,
       total: order.total,
       created: new Date().toISOString(),
     });

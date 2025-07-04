@@ -22,7 +22,7 @@ const CurrentOrders = () => {
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
-            <Text className="text-base">Order ID: {item.id}</Text>
+            <Text className="text-base">Created: {item.created}</Text>
             <Button
               title="Cancel"
               onPress={() => {

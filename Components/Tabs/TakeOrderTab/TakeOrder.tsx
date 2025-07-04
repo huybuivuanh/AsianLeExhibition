@@ -16,9 +16,7 @@ const TakeOrder = ({
   const [loading] = useState(false);
 
   const dispatch = useDispatch();
-  const numberOfItems = useSelector(
-    (state: RootState) => state.order.numberOfItems,
-  );
+  const order = useSelector((state: RootState) => state.order);
 
   useEffect(() => {
     const unsubscribe = subscribeToMenuItems(
@@ -53,7 +51,7 @@ const TakeOrder = ({
         }
       />
       <Button
-        title={`Cart (${numberOfItems})`}
+        title={`Cart (${order.numberOfItems})`}
         onPress={() => {
           navigation.navigate('Cart');
         }}
