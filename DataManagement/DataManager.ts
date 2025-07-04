@@ -5,6 +5,7 @@ import {
   onSnapshot,
   deleteDoc,
   doc,
+  runTransaction,
 } from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
 
@@ -96,8 +97,9 @@ export function subscribeToCurrentOrders(onUpdate: any, onError: any) {
 // Submit the current order to the 'currentOrders' collection
 export async function submitCurrentOrder(order: Order) {
   const currentOrdersCollection = collection(db, 'currentOrders');
+  const orderNumberDocRef = doc(db, 'counters', 'orderNumber');
 
-  // Extract item IDs and total from the order
+  // Extract item IDs and quantities from the order
   const itemQuantities = order.items.reduce(
     (acc: { [key: string]: number }, item) => {
       if (item.id !== undefined) {
@@ -107,14 +109,37 @@ export async function submitCurrentOrder(order: Order) {
     },
     {},
   );
+
   try {
+    // 🔑 Run transaction to get and increment order number atomically
+    const orderNumber = await runTransaction(db, async transaction => {
+      const orderNumberDoc = await transaction.get(orderNumberDocRef);
+
+      if (!orderNumberDoc.exists()) {
+        throw new Error('Order number counter document does not exist!');
+      }
+
+      const data = orderNumberDoc.data();
+      const currentNumber =
+        data && data.current !== undefined ? data.current : 0;
+      const nextNumber = currentNumber + 1;
+
+      transaction.update(orderNumberDocRef, { current: nextNumber });
+
+      return nextNumber;
+    });
+
+    // Save the order with the generated orderNumber
     await addDoc(currentOrdersCollection, {
+      orderNumber,
       quantities: itemQuantities,
       total: order.total,
       created: new Date().toISOString(),
     });
-    Alert.alert('Success', 'Current order added!');
+
+    Alert.alert('Success', `Order #${orderNumber} added!`);
   } catch (error) {
+    console.error('Failed to add current order:', error);
     Alert.alert('Failed to add current order');
     throw error;
   }
