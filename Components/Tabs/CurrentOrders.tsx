@@ -7,7 +7,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { subscribeToCurrentOrders } from '../../DataManagement/DataManager';
+import {
+  subscribeToCurrentOrders,
+  formattedDate,
+} from '../../DataManagement/DataManager';
 
 const CurrentOrders = () => {
   const [currentOrders, setCurrentOrders] = useState([] as Order[]);
@@ -23,16 +26,6 @@ const CurrentOrders = () => {
     return () => unsubscribe();
   }, []);
 
-  const formattedDate = (isoString: string) => {
-    const date = new Date(isoString);
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    const year = date.getFullYear();
-    return `${hours}:${minutes} - ${month}/${day}/${year}`;
-  };
-
   const toggleExpand = (id: string) => {
     setExpandedOrderId(prev => (prev === id ? null : id));
   };
@@ -41,36 +34,34 @@ const CurrentOrders = () => {
     <View className="flex-1 p-5">
       <FlatList
         data={currentOrders}
-        keyExtractor={(item, index) => item.id || index.toString()}
+        keyExtractor={(order, index) => order.id || index.toString()}
         renderItem={({ item }) => (
           <View className="border-b border-gray-200 py-2">
             <TouchableOpacity onPress={() => toggleExpand(item.id || '')}>
               <Text className="text-base font-bold">
                 Order#: {item.orderNumber} -{' '}
-                {item.created ? formattedDate(item.created) : 'N/A'}
+                {item.created ? formattedDate(item.created) : 'N/A'} -{' '}
+                {item.status}
               </Text>
             </TouchableOpacity>
 
             {expandedOrderId === item.id && (
               <View className="mt-2 pl-2">
-                {/* Replace this with actual order details */}
-                {item.items && item.items.length > 0 ? (
-                  item.items.map((orderItem, index) => (
+                {item.orderItems &&
+                  item.orderItems.length > 0 &&
+                  item.orderItems.map((orderItem, index) => (
                     <Text key={index}>
-                      {orderItem.name} x {orderItem.quantity} - $
-                      {orderItem.price}
+                      {orderItem.quantity}x {orderItem.name} - $
+                      {(orderItem.price * orderItem.quantity).toFixed(2)}
                     </Text>
-                  ))
-                ) : (
-                  <Text>No items in this order.</Text>
-                )}
+                  ))}
 
                 <Text>Total: ${item.total.toFixed(2)}</Text>
                 <Button
                   title="Cancel"
                   color="red"
                   onPress={() => {
-                    Alert.alert(`Canceled order ${item.id}`);
+                    Alert.alert(`Canceled order ${item.orderNumber}`);
                   }}
                 />
               </View>

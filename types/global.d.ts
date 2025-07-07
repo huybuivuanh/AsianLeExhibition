@@ -18,9 +18,10 @@ declare global {
   type Order = {
     id?: string;
     orderNumber?: number;
-    items: OrderItem[];
+    orderItems: OrderItem[];
     total: number;
     numberOfItems: number;
+    status: OrderStatus;
     created?: string;
   };
 }

@@ -6,11 +6,23 @@ import {
   deleteDoc,
   doc,
   runTransaction,
+  updateDoc,
 } from '@react-native-firebase/firestore';
 import { Alert } from 'react-native';
+import { OrderStatus } from '../types/enum';
 
 // Initialize Firestore
 const db = getFirestore();
+
+export const formattedDate = (isoString: string) => {
+  const date = new Date(isoString);
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const year = date.getFullYear();
+  return `${hours}:${minutes} - ${month}/${day}/${year}`;
+};
 
 // Menu Items Management
 
@@ -97,18 +109,8 @@ export function subscribeToCurrentOrders(onUpdate: any, onError: any) {
 // Submit the current order to the 'currentOrders' collection
 export async function submitCurrentOrder(order: Order) {
   const currentOrdersCollection = collection(db, 'currentOrders');
+  const orderHistoryCollection = collection(db, 'orderHistory');
   const orderNumberDocRef = doc(db, 'counters', 'orderNumber');
-
-  // Extract item IDs and quantities from the order
-  const itemQuantities = order.items.reduce(
-    (acc: { [key: string]: number }, item) => {
-      if (item.id !== undefined) {
-        acc[item.id] = item.quantity;
-      }
-      return acc;
-    },
-    {},
-  );
 
   try {
     // 🔑 Run transaction to get and increment order number atomically
@@ -129,13 +131,19 @@ export async function submitCurrentOrder(order: Order) {
       return nextNumber;
     });
 
-    // Save the order with the generated orderNumber
-    await addDoc(currentOrdersCollection, {
+    const orderToBeSubmitted = {
       orderNumber,
-      quantities: itemQuantities,
+      orderItems: order.orderItems,
       total: order.total,
+      numberOfItem: order.numberOfItems,
+      status: OrderStatus.InProgress,
       created: new Date().toISOString(),
-    });
+    };
+
+    // Save the order with the generated orderNumber
+    await addDoc(currentOrdersCollection, orderToBeSubmitted);
+
+    await addDoc(orderHistoryCollection, orderToBeSubmitted);
 
     Alert.alert('Success', `Order #${orderNumber} added!`);
   } catch (error) {
@@ -145,14 +153,49 @@ export async function submitCurrentOrder(order: Order) {
   }
 }
 
-// Delete a current order by its document ID
-export async function deleteCurrentOrder(orderId: string) {
+export async function updateCurrentOrder(orderId: string, status: OrderStatus) {
   try {
     const orderDoc = doc(db, 'currentOrders', orderId);
+    const orderHistoryDoc = doc(db, 'orderHistory', orderId);
+
     await deleteDoc(orderDoc);
-    Alert.alert('Success', 'Current order deleted!');
+
+    if (status) {
+      await updateDoc(orderHistoryDoc, {
+        status: status,
+      });
+    }
+
+    Alert.alert('Success', 'Order updated successfully!');
   } catch (error) {
-    Alert.alert('Failed to delete current order');
+    Alert.alert('Error', 'Failed to update current order');
     throw error;
   }
+}
+
+// Order History Management
+
+// Subscribe to realtime updates of order history
+export function subscribeToOrderHistory(onUpdate: any, onError: any) {
+  const currentOrdersCollection = collection(db, 'orderHistory');
+
+  const unsubscribe = onSnapshot(
+    currentOrdersCollection,
+    querySnapshot => {
+      const currentOrders: Order[] = [];
+      querySnapshot.forEach(docSnap => {
+        currentOrders.push({
+          ...(docSnap.data() as Order),
+          id: docSnap.id,
+        });
+      });
+      onUpdate(currentOrders);
+    },
+    error => {
+      console.error('Realtime update error:', error);
+      if (onError) onError(error);
+    },
+  );
+
+  return unsubscribe;
 }

@@ -11,11 +11,11 @@ const Cart = () => {
 
   return (
     <View className="flex-1 p-5">
-      {order.items.length === 0 ? (
+      {order.orderItems.length === 0 ? (
         <Text className="text-gray-500">Cart is empty.</Text>
       ) : (
         <FlatList
-          data={order.items}
+          data={order.orderItems}
           keyExtractor={(item, index) => item.id || index.toString()}
           renderItem={({ item }) => (
             <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
@@ -37,7 +37,7 @@ const Cart = () => {
           )}
         />
       )}
-      {order.items.length > 0 && (
+      {order.orderItems.length > 0 && (
         <Button
           title={`Submit - Total: $${order.total}`}
           onPress={() => {
