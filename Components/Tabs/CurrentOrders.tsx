@@ -6,34 +6,18 @@ import {
   Button,
   TouchableOpacity,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import {
-  subscribeToCurrentOrders,
-  updateOrder,
-  formattedDate,
-} from '../../DataManagement/DataManager';
+import React, { useState } from 'react';
+import { updateOrder, formattedDate } from '../../DataManagement/DataManager';
 import { OrderStatus } from '../../types/enum';
+import { RootState } from '../../Redux/Store';
+import { useSelector } from 'react-redux';
 
 const CurrentOrders = () => {
-  const [currentOrders, setCurrentOrders] = useState([] as Order[]);
+  const currentOrders = useSelector(
+    (state: RootState) => state.currentOrders.orders as Order[],
+  );
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [loading] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = subscribeToCurrentOrders(
-      (orders: Order[]) => {
-        const sortedOrders = [...orders].sort((a, b) => {
-          const dateA = new Date(a.created || '').getTime();
-          const dateB = new Date(b.created || '').getTime();
-          return dateB - dateA;
-        });
-        setCurrentOrders(sortedOrders);
-      },
-      (error: any) => Alert.alert('Failed to fetch current orders', error),
-    );
-
-    return () => unsubscribe();
-  }, []);
 
   const toggleExpand = (id: string) => {
     setExpandedOrderId(prev => (prev === id ? null : id));

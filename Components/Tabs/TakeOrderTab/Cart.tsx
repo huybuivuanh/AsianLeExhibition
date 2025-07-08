@@ -40,14 +40,23 @@ const Cart = () => {
         />
       )}
       {order.orderItems.length > 0 && (
-        <Button
-          title={`Submit - Total: $${order.total}`}
-          onPress={() => {
-            submitCurrentOrder(order);
-            dispatch(clearOrder());
-            navigation.goBack();
-          }}
-        />
+        <View className="flex-row justify-between items-center">
+          <Button
+            title={`Submit - $${order.total}`}
+            onPress={() => {
+              submitCurrentOrder(order);
+              dispatch(clearOrder());
+              navigation.goBack();
+            }}
+          />
+          <Button
+            title={`Clear Order`}
+            color="orange"
+            onPress={() => {
+              dispatch(clearOrder());
+            }}
+          />
+        </View>
       )}
     </View>
   );

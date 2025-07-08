@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MenuDataProvider } from './DataManagement/MenuDataProvider';
+import { CurrentOrderDataProvider } from './DataManagement/CurrentOrderDataProvider';
 import { Provider } from 'react-redux';
 import { store } from './Redux/Store';
 
@@ -43,14 +44,16 @@ const App = () => {
       <GestureHandlerRootView>
         <NavigationContainer>
           <MenuDataProvider>
-            <Stack.Navigator>
-              <Stack.Screen
-                name="MainTabs"
-                component={TabNavigator}
-                options={{ headerShown: false }}
-              />
-              <Stack.Screen name="Cart" component={Cart} />
-            </Stack.Navigator>
+            <CurrentOrderDataProvider>
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="MainTabs"
+                  component={TabNavigator}
+                  options={{ headerShown: false }}
+                />
+                <Stack.Screen name="Cart" component={Cart} />
+              </Stack.Navigator>
+            </CurrentOrderDataProvider>
           </MenuDataProvider>
         </NavigationContainer>
       </GestureHandlerRootView>

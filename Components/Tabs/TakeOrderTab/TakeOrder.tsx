@@ -34,16 +34,20 @@ const TakeOrder = ({
         data={menuItems}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
-          <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
+          <View
+            className={`flex-row justify-between items-center py-2 border-b border-gray-200 ${
+              addedItemId === item.id ? 'bg-green-300' : ''
+            }`}
+          >
             <Text className="text-base">
-              {item.name} - ${item.price} {addedItemId === item.id ? '✓' : ''}
+              {item.name} - ${item.price}
             </Text>
             <Button
               title="+"
               onPress={() => {
                 dispatch(addItem(item));
                 setAddedItemId(item.id ?? null);
-                setTimeout(() => setAddedItemId(null), 500);
+                setTimeout(() => setAddedItemId(null), 180);
               }}
             />
           </View>
