@@ -28,6 +28,15 @@ export const formattedDate = (isoString: string, onlyShowTime: boolean) => {
   return `${hours}:${minutes} - ${month}/${day}/${year}`;
 };
 
+export const sortOrders = (orders: Order[]) => {
+  const sortedOrders = [...orders].sort((a, b) => {
+    const dateA = new Date(a.created || '').getTime();
+    const dateB = new Date(b.created || '').getTime();
+    return dateB - dateA;
+  });
+  return sortedOrders;
+};
+
 // Menu Items Management
 
 // Add a new menu item to the 'menuItems' collection

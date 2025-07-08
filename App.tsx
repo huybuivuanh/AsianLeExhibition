@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { MenuDataProvider } from './DataManagement/MenuDataProvider';
 import { CurrentOrderDataProvider } from './DataManagement/CurrentOrderDataProvider';
+import { OrderHistoryDataProvider } from './DataManagement/OrderHistoryDataProvider';
 import { Provider } from 'react-redux';
 import { store } from './Redux/Store';
 
@@ -45,14 +46,16 @@ const App = () => {
         <NavigationContainer>
           <MenuDataProvider>
             <CurrentOrderDataProvider>
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="MainTabs"
-                  component={TabNavigator}
-                  options={{ headerShown: false }}
-                />
-                <Stack.Screen name="Cart" component={Cart} />
-              </Stack.Navigator>
+              <OrderHistoryDataProvider>
+                <Stack.Navigator>
+                  <Stack.Screen
+                    name="MainTabs"
+                    component={TabNavigator}
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen name="Cart" component={Cart} />
+                </Stack.Navigator>
+              </OrderHistoryDataProvider>
             </CurrentOrderDataProvider>
           </MenuDataProvider>
         </NavigationContainer>

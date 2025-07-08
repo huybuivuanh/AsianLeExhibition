@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { subscribeToCurrentOrders, sortOrders } from './DataManager';
-import { setCurrentOrders } from '../Redux/CurrentOrderSlice';
+import { subscribeToOrderHistory, sortOrders } from './DataManager';
+import { setOrderHistory } from '../Redux/OrderHistorySlice';
 
-export const CurrentOrderDataProvider = ({
+export const OrderHistoryDataProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -11,8 +11,8 @@ export const CurrentOrderDataProvider = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = subscribeToCurrentOrders(
-      (orders: Order[]) => dispatch(setCurrentOrders(sortOrders(orders))),
+    const unsubscribe = subscribeToOrderHistory(
+      (orders: Order[]) => dispatch(setOrderHistory(sortOrders(orders))),
       (error: any) => console.error(error),
     );
 

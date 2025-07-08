@@ -1,31 +1,16 @@
-import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import {
-  subscribeToOrderHistory,
-  formattedDate,
-} from '../../DataManagement/DataManager';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import { formattedDate } from '../../DataManagement/DataManager';
 import { OrderStatus } from '../../types/enum';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../Redux/Store';
 
 const OrderHistory = () => {
-  const [currentOrders, setCurrentOrders] = useState([] as Order[]);
+  const orderHistorty = useSelector(
+    (state: RootState) => state.orderHistory.orders as Order[],
+  );
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [loading] = useState(false);
-
-  useEffect(() => {
-    const unsubscribe = subscribeToOrderHistory(
-      (orders: Order[]) => {
-        const sortedOrders = [...orders].sort((a, b) => {
-          const dateA = new Date(a.created || '').getTime();
-          const dateB = new Date(b.created || '').getTime();
-          return dateB - dateA;
-        });
-        setCurrentOrders(sortedOrders);
-      },
-      (error: any) => Alert.alert('Failed to fetch current orders', error),
-    );
-
-    return () => unsubscribe();
-  }, []);
 
   const toggleExpand = (id: string) => {
     setExpandedOrderId(prev => (prev === id ? null : id));
@@ -34,7 +19,7 @@ const OrderHistory = () => {
   return (
     <View className="flex-1 p-5">
       <FlatList
-        data={currentOrders}
+        data={orderHistorty}
         keyExtractor={(order, index) => order.id || index.toString()}
         renderItem={({ item }) => (
           <View className="border-b border-gray-200 py-2">
