@@ -9,8 +9,10 @@ import {
 import React, { useEffect, useState } from 'react';
 import {
   subscribeToCurrentOrders,
+  updateOrder,
   formattedDate,
 } from '../../DataManagement/DataManager';
+import { OrderStatus } from '../../types/enum';
 
 const CurrentOrders = () => {
   const [currentOrders, setCurrentOrders] = useState([] as Order[]);
@@ -19,7 +21,14 @@ const CurrentOrders = () => {
 
   useEffect(() => {
     const unsubscribe = subscribeToCurrentOrders(
-      (orders: React.SetStateAction<Order[]>) => setCurrentOrders(orders),
+      (orders: Order[]) => {
+        const sortedOrders = [...orders].sort((a, b) => {
+          const dateA = new Date(a.created || '').getTime();
+          const dateB = new Date(b.created || '').getTime();
+          return dateB - dateA;
+        });
+        setCurrentOrders(sortedOrders);
+      },
       (error: any) => Alert.alert('Failed to fetch current orders', error),
     );
 
@@ -37,12 +46,40 @@ const CurrentOrders = () => {
         keyExtractor={(order, index) => order.id || index.toString()}
         renderItem={({ item }) => (
           <View className="border-b border-gray-200 py-2">
-            <TouchableOpacity onPress={() => toggleExpand(item.id || '')}>
-              <Text className="text-base font-bold">
-                Order#: {item.orderNumber} -{' '}
-                {item.created ? formattedDate(item.created) : 'N/A'} -{' '}
-                {item.status}
-              </Text>
+            <TouchableOpacity
+              className="flex-row justify-between items-center"
+              onPress={() => toggleExpand(item.id || '')}
+            >
+              <View className="flex-row items-center">
+                <Text className="text-base font-bold">
+                  Order#: {item.orderNumber} -{' '}
+                  {item.created ? formattedDate(item.created, true) : 'N/A'}{' '}
+                  -{' '}
+                </Text>
+                <Text
+                  className={
+                    item.status === OrderStatus.InProgress
+                      ? 'text-blue-500'
+                      : item.status === OrderStatus.Canceled
+                        ? 'text-red-500'
+                        : 'text-gray-500'
+                  }
+                >
+                  {item.status}
+                </Text>
+              </View>
+
+              <Button
+                title="Done"
+                color="blue"
+                onPress={() => {
+                  if (item.id) {
+                    updateOrder(item.id, OrderStatus.Completed);
+                  } else {
+                    Alert.alert('Error', 'Order ID is missing.');
+                  }
+                }}
+              />
             </TouchableOpacity>
 
             {expandedOrderId === item.id && (

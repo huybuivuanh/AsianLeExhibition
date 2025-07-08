@@ -1,16 +1,10 @@
-import {
-  View,
-  Text,
-  FlatList,
-  Alert,
-  Button,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import {
   subscribeToOrderHistory,
   formattedDate,
 } from '../../DataManagement/DataManager';
+import { OrderStatus } from '../../types/enum';
 
 const OrderHistory = () => {
   const [currentOrders, setCurrentOrders] = useState([] as Order[]);
@@ -19,7 +13,14 @@ const OrderHistory = () => {
 
   useEffect(() => {
     const unsubscribe = subscribeToOrderHistory(
-      (orders: React.SetStateAction<Order[]>) => setCurrentOrders(orders),
+      (orders: Order[]) => {
+        const sortedOrders = [...orders].sort((a, b) => {
+          const dateA = new Date(a.created || '').getTime();
+          const dateB = new Date(b.created || '').getTime();
+          return dateB - dateA;
+        });
+        setCurrentOrders(sortedOrders);
+      },
       (error: any) => Alert.alert('Failed to fetch current orders', error),
     );
 
@@ -37,12 +38,30 @@ const OrderHistory = () => {
         keyExtractor={(order, index) => order.id || index.toString()}
         renderItem={({ item }) => (
           <View className="border-b border-gray-200 py-2">
-            <TouchableOpacity onPress={() => toggleExpand(item.id || '')}>
-              <Text className="text-base font-bold">
-                Order#: {item.orderNumber} -{' '}
-                {item.created ? formattedDate(item.created) : 'N/A'} -{' '}
-                {item.status}
-              </Text>
+            <TouchableOpacity
+              className="flex-row justify-between items-center"
+              onPress={() => toggleExpand(item.id || '')}
+            >
+              <View className="flex-row items-center">
+                <Text className="text-base font-bold">
+                  Order#: {item.orderNumber} -{' '}
+                  {item.created ? formattedDate(item.created, false) : 'N/A'}{' '}
+                  -{' '}
+                </Text>
+                <Text
+                  className={
+                    item.status === OrderStatus.InProgress
+                      ? 'text-blue-500'
+                      : item.status === OrderStatus.Canceled
+                        ? 'text-red-500'
+                        : item.status === OrderStatus.Completed
+                          ? 'text-green-500'
+                          : 'text-gray-500'
+                  }
+                >
+                  {item.status}
+                </Text>
+              </View>
             </TouchableOpacity>
 
             {expandedOrderId === item.id && (
@@ -57,13 +76,6 @@ const OrderHistory = () => {
                   ))}
 
                 <Text>Total: ${item.total.toFixed(2)}</Text>
-                <Button
-                  title="Cancel"
-                  color="red"
-                  onPress={() => {
-                    Alert.alert(`Canceled order ${item.orderNumber}`);
-                  }}
-                />
               </View>
             )}
           </View>

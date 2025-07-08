@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, FlatList, Button } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
-import { addItem, removeItem } from '../../../Redux/OrderSlice';
+import { addItem, removeItem, clearOrder } from '../../../Redux/OrderSlice';
 import { RootState } from '../../../Redux/store';
 import { submitCurrentOrder } from '../../../DataManagement/DataManager';
+import { useNavigation } from '@react-navigation/native';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) => state.order);
+  const navigation = useNavigation();
 
   return (
     <View className="flex-1 p-5">
@@ -42,6 +44,8 @@ const Cart = () => {
           title={`Submit - Total: $${order.total}`}
           onPress={() => {
             submitCurrentOrder(order);
+            dispatch(clearOrder());
+            navigation.goBack();
           }}
         />
       )}

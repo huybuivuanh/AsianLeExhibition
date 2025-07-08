@@ -2,6 +2,7 @@ import {
   getFirestore,
   collection,
   addDoc,
+  setDoc,
   onSnapshot,
   deleteDoc,
   doc,
@@ -14,13 +15,16 @@ import { OrderStatus } from '../types/enum';
 // Initialize Firestore
 const db = getFirestore();
 
-export const formattedDate = (isoString: string) => {
+export const formattedDate = (isoString: string, onlyShowTime: boolean) => {
   const date = new Date(isoString);
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const day = date.getDate().toString().padStart(2, '0');
   const year = date.getFullYear();
+  if (onlyShowTime) {
+    return `${hours}:${minutes}`;
+  }
   return `${hours}:${minutes} - ${month}/${day}/${year}`;
 };
 
@@ -141,9 +145,12 @@ export async function submitCurrentOrder(order: Order) {
     };
 
     // Save the order with the generated orderNumber
-    await addDoc(currentOrdersCollection, orderToBeSubmitted);
+    // Generate a single Firestore doc ID
+    const newOrderDocRef = doc(currentOrdersCollection);
+    await setDoc(newOrderDocRef, orderToBeSubmitted);
 
-    await addDoc(orderHistoryCollection, orderToBeSubmitted);
+    const orderHistoryDocRef = doc(orderHistoryCollection, newOrderDocRef.id);
+    await setDoc(orderHistoryDocRef, orderToBeSubmitted);
 
     Alert.alert('Success', `Order #${orderNumber} added!`);
   } catch (error) {
@@ -153,7 +160,7 @@ export async function submitCurrentOrder(order: Order) {
   }
 }
 
-export async function updateCurrentOrder(orderId: string, status: OrderStatus) {
+export async function updateOrder(orderId: string, status: OrderStatus) {
   try {
     const orderDoc = doc(db, 'currentOrders', orderId);
     const orderHistoryDoc = doc(db, 'orderHistory', orderId);
