@@ -13,6 +13,7 @@ const TakeOrder = ({
   navigation: NativeStackNavigationProp<any>;
 }) => {
   const [menuItems, setMenuItems] = useState([] as MenuItem[]);
+  const [addedItemId, setAddedItemId] = useState<string | null>(null);
   const [loading] = useState(false);
 
   const dispatch = useDispatch();
@@ -35,12 +36,14 @@ const TakeOrder = ({
         renderItem={({ item }) => (
           <View className="flex-row justify-between items-center py-2 border-b border-gray-200">
             <Text className="text-base">
-              {item.name} - ${item.price}
+              {item.name} - ${item.price} {addedItemId === item.id ? '✓' : ''}
             </Text>
             <Button
               title="+"
               onPress={() => {
                 dispatch(addItem(item));
+                setAddedItemId(item.id ?? null);
+                setTimeout(() => setAddedItemId(null), 500);
               }}
             />
           </View>
