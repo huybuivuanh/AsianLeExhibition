@@ -4,3 +4,10 @@ export enum OrderStatus {
   Completed = 'Completed',
   Canceled = 'Canceled',
 }
+
+export enum TimeFormat {
+  DateAndTime = 'DateAndTime',
+  OnlyTime = 'OnlyTime',
+  OnlyDate = 'OnlyDate',
+  OnlyMonth = 'OnlyMonth',
+}

@@ -1,7 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { formattedDate } from '../../DataManagement/DataManager';
-import { OrderStatus } from '../../types/enum';
+import { OrderStatus, TimeFormat } from '../../types/enum';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../Redux/Store';
 
@@ -30,7 +30,9 @@ const OrderHistory = () => {
               <View className="flex-row items-center">
                 <Text className="text-base font-bold">
                   Order#: {item.orderNumber} -{' '}
-                  {item.created ? formattedDate(item.created, false) : 'N/A'}{' '}
+                  {item.created
+                    ? formattedDate(item.created, TimeFormat.DateAndTime)
+                    : 'N/A'}{' '}
                   -{' '}
                 </Text>
                 <Text
