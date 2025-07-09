@@ -21,46 +21,81 @@ const Sales = () => {
   const toggleExpand = (id: string) => {
     setExpandedSaleId(prev => (prev === id ? null : id));
   };
+
   return (
-    <View className="flex-1 p-5">
-      <FlatList
-        data={dailySales}
-        keyExtractor={(sale, index) => sale.id || index.toString()}
-        renderItem={({ item }) => (
-          <View className="border-b border-gray-200 py-2">
-            <TouchableOpacity
-              className="flex-row justify-between items-center"
-              onPress={() => toggleExpand(item.id || '')}
-            >
-              <Text className="text-base font-bold">
-                Date: {formattedDate(item.created, TimeFormat.OnlyDate)}
-              </Text>
-            </TouchableOpacity>
+    <View className="flex-1 p-4 bg-white">
+      {/* Daily Sales */}
+      <View className="mb-6">
+        <Text className="text-xl font-bold text-gray-800 mb-3">
+          Daily Sales
+        </Text>
+        <FlatList
+          data={dailySales}
+          keyExtractor={(sale, index) => sale.id || index.toString()}
+          renderItem={({ item }) => (
+            <View className="bg-gray-100 rounded-xl mb-3 p-4 shadow-sm">
+              <TouchableOpacity
+                className="flex-row justify-between items-center"
+                onPress={() => toggleExpand(item.id || '')}
+              >
+                <Text className="text-base font-semibold text-gray-700">
+                  {formattedDate(item.created, TimeFormat.OnlyDate)}
+                </Text>
+                <Text className="text-blue-600 text-sm">
+                  {expandedSaleId === item.id ? 'Hide' : 'View'}
+                </Text>
+              </TouchableOpacity>
 
-            {expandedSaleId === item.id && <Text>Total: {item.total}</Text>}
-          </View>
-        )}
-      />
-      <FlatList
-        data={monthlySales}
-        keyExtractor={(sale, index) => sale.id || index.toString()}
-        renderItem={({ item }) => (
-          <View className="border-b border-gray-200 py-2">
-            <TouchableOpacity
-              className="flex-row justify-between items-center"
-              onPress={() => toggleExpand(item.id || '')}
-            >
-              <Text className="text-base font-bold">
-                Date: {formattedDate(item.created, TimeFormat.OnlyMonth)}
-              </Text>
-            </TouchableOpacity>
+              {expandedSaleId === item.id && (
+                <View className="mt-2">
+                  <Text className="text-gray-600">Total: ${item.total}</Text>
+                </View>
+              )}
+            </View>
+          )}
+        />
+      </View>
 
-            {expandedSaleId === item.id && <Text>Total: {item.total}</Text>}
-          </View>
-        )}
-      />
-      <View>
-        <Text>Total: ${totalSales.total}</Text>
+      {/* Monthly Sales */}
+      <View className="mb-6">
+        <Text className="text-xl font-bold text-gray-800 mb-3">
+          Monthly Sales
+        </Text>
+        <FlatList
+          data={monthlySales}
+          keyExtractor={(sale, index) => sale.id || index.toString()}
+          renderItem={({ item }) => (
+            <View className="bg-gray-100 rounded-xl mb-3 p-4 shadow-sm">
+              <TouchableOpacity
+                className="flex-row justify-between items-center"
+                onPress={() => toggleExpand(item.id || '')}
+              >
+                <Text className="text-base font-semibold text-gray-700">
+                  {formattedDate(item.created, TimeFormat.OnlyMonth)}
+                </Text>
+                <Text className="text-blue-600 text-sm">
+                  {expandedSaleId === item.id ? 'Hide' : 'View'}
+                </Text>
+              </TouchableOpacity>
+
+              {expandedSaleId === item.id && (
+                <View className="mt-2">
+                  <Text className="text-gray-600">Total: ${item.total}</Text>
+                </View>
+              )}
+            </View>
+          )}
+        />
+      </View>
+
+      {/* Total Sales */}
+      <View className="bg-green-100 rounded-xl p-4 shadow-sm">
+        <Text className="text-xl font-bold text-gray-800 mb-2">
+          Total Sales
+        </Text>
+        <Text className="text-lg text-green-700 font-semibold">
+          Total: ${totalSales.total}
+        </Text>
       </View>
     </View>
   );

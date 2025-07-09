@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button } from 'react-native';
-import { Alert } from 'react-native';
+import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
 import { subscribeToMenuItems } from '../../../DataManagement/DataManager';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,40 +28,48 @@ const TakeOrder = ({
   }, []);
 
   return (
-    <View className="flex-1 p-5">
+    <View className="flex-1 p-4 bg-white">
       <FlatList
         data={menuItems}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <View
-            className={`flex-row justify-between items-center py-2 border-b border-gray-200 ${
-              addedItemId === item.id ? 'bg-green-300' : ''
+            className={`flex-row justify-between items-center p-4 mb-3 rounded-xl shadow-sm ${
+              addedItemId === item.id ? 'bg-green-100' : 'bg-gray-100'
             }`}
           >
-            <Text className="text-base">
-              {item.name} - ${item.price}
+            <Text className="text-base font-medium text-gray-800">
+              {item.name} - $
+              {typeof item.price === 'number' ? item.price.toFixed(2) : 'N/A'}
             </Text>
-            <Button
-              title="+"
+            <TouchableOpacity
+              className="bg-green-500 px-4 py-2 rounded-full"
               onPress={() => {
                 dispatch(addItem(item));
                 setAddedItemId(item.id ?? null);
                 setTimeout(() => setAddedItemId(null), 180);
               }}
-            />
+            >
+              <Text className="text-white text-lg font-semibold">+</Text>
+            </TouchableOpacity>
           </View>
         )}
         refreshing={loading}
         ListEmptyComponent={
-          <Text className="text-gray-500">Menu Is Empty.</Text>
+          <View className="items-center mt-10">
+            <Text className="text-gray-500">Menu is empty.</Text>
+          </View>
         }
       />
-      <Button
-        title={`Cart (${order.numberOfItems})`}
-        onPress={() => {
-          navigation.navigate('Cart');
-        }}
-      />
+
+      <TouchableOpacity
+        className="bg-blue-600 py-3 rounded-xl items-center mt-4"
+        onPress={() => navigation.navigate('Cart')}
+      >
+        <Text className="text-white text-base font-semibold">
+          Cart ({order.numberOfItems})
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
