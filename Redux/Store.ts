@@ -3,16 +3,18 @@ import OrderReducer from './OrderSlice';
 import MenuReducer from './MenuSlice';
 import CurrentOrdersReducer from './CurrentOrderSlice';
 import OrderHistoryReducer from './OrderHistorySlice';
+import SalesReducer from './SalesSlice';
 
-export const store = configureStore({
+export const Store = configureStore({
   reducer: {
     menu: MenuReducer,
     order: OrderReducer,
     currentOrders: CurrentOrdersReducer,
     orderHistory: OrderHistoryReducer,
+    sales: SalesReducer,
   },
 });
 
 // Type helpers
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof Store.getState>;
+export type AppDispatch = typeof Store.dispatch;

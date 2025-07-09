@@ -8,33 +8,46 @@ import {
   doc,
   runTransaction,
   updateDoc,
+  limit,
+  query,
+  orderBy,
+  increment,
 } from '@react-native-firebase/firestore';
-import { Alert } from 'react-native';
 import { OrderStatus } from '../types/enum';
+
+import { DateTime } from 'luxon';
+
+const getDate = () => {
+  return DateTime.fromISO(new Date().toISOString(), { zone: 'utc' }).setZone(
+    'America/Regina',
+  );
+};
 
 // Initialize Firestore
 const db = getFirestore();
 
 export const formattedDate = (isoString: string, onlyShowTime: boolean) => {
-  const date = new Date(isoString);
-  const hours = date.getHours().toString().padStart(2, '0');
-  const minutes = date.getMinutes().toString().padStart(2, '0');
-  const month = (date.getMonth() + 1).toString().padStart(2, '0');
-  const day = date.getDate().toString().padStart(2, '0');
-  const year = date.getFullYear();
-  if (onlyShowTime) {
-    return `${hours}:${minutes}`;
-  }
-  return `${hours}:${minutes} - ${month}/${day}/${year}`;
+  const date = DateTime.fromISO(isoString, { zone: 'utc' }).setZone(
+    'America/Regina',
+  );
+  if (onlyShowTime) return date.toFormat('HH:mm');
+  return date.toFormat('yyyy/MM/dd HH:mm');
 };
 
 export const sortOrders = (orders: Order[]) => {
-  const sortedOrders = [...orders].sort((a, b) => {
-    const dateA = new Date(a.created || '').getTime();
-    const dateB = new Date(b.created || '').getTime();
+  return [...orders].sort((a, b) => {
+    const dateA = DateTime.fromISO(a.created || '').toMillis();
+    const dateB = DateTime.fromISO(b.created || '').toMillis();
     return dateB - dateA;
   });
-  return sortedOrders;
+};
+
+export const sortSales = (sales: Sales[]) => {
+  return [...sales].sort((a, b) => {
+    const dateA = DateTime.fromISO(a.created || '').toMillis();
+    const dateB = DateTime.fromISO(b.created || '').toMillis();
+    return dateB - dateA;
+  });
 };
 
 // Menu Items Management
@@ -48,9 +61,9 @@ export async function addMenuItem(item: { name: string; price: number }) {
       price: item.price,
       created: new Date().toISOString(),
     });
-    Alert.alert('Success', 'Menu item added!');
+    console.log('Success', 'Menu item added!');
   } catch (error) {
-    Alert.alert('Failed to add menu item');
+    console.log('Failed to add menu item');
     throw error;
   }
 }
@@ -60,9 +73,9 @@ export async function deleteMenuItem(itemId: string) {
   try {
     const itemDoc = doc(db, 'menuItems', itemId);
     await deleteDoc(itemDoc);
-    Alert.alert('Success', 'Menu item deleted!');
+    console.log('Success', 'Menu item deleted!');
   } catch (error) {
-    Alert.alert('Failed to delete menu item');
+    console.log('Failed to delete menu item');
     throw error;
   }
 }
@@ -95,7 +108,10 @@ export function subscribeToMenuItems(onUpdate: any, onError: any) {
 // Current Orders Management
 
 // Subscribe to realtime updates of current orders
-export function subscribeToCurrentOrders(onUpdate: any, onError: any) {
+export function subscribeToCurrentOrders(
+  onUpdate: (orders: Order[]) => void,
+  onError: (error: any) => void,
+) {
   const currentOrdersCollection = collection(db, 'currentOrders');
 
   const unsubscribe = onSnapshot(
@@ -121,8 +137,8 @@ export function subscribeToCurrentOrders(onUpdate: any, onError: any) {
 
 // Submit the current order to the 'currentOrders' collection
 export async function submitCurrentOrder(order: Order) {
-  const currentOrdersCollection = collection(db, 'currentOrders');
-  const orderHistoryCollection = collection(db, 'orderHistory');
+  const currentOrdersCollectionRef = collection(db, 'currentOrders');
+  const orderHistoryCollectionRef = collection(db, 'orderHistory');
   const orderNumberDocRef = doc(db, 'counters', 'orderNumber');
 
   try {
@@ -155,36 +171,65 @@ export async function submitCurrentOrder(order: Order) {
 
     // Save the order with the generated orderNumber
     // Generate a single Firestore doc ID
-    const newOrderDocRef = doc(currentOrdersCollection);
+    const newOrderDocRef = doc(currentOrdersCollectionRef);
     await setDoc(newOrderDocRef, orderToBeSubmitted);
 
-    const orderHistoryDocRef = doc(orderHistoryCollection, newOrderDocRef.id);
+    const orderHistoryDocRef = doc(
+      orderHistoryCollectionRef,
+      newOrderDocRef.id,
+    );
     await setDoc(orderHistoryDocRef, orderToBeSubmitted);
 
-    Alert.alert('Success', `Order #${orderNumber} added!`);
+    // Update sales
+
+    // Total sales
+    const totalSalesDocRef = doc(db, 'sales', 'totalSales');
+    await setDoc(
+      totalSalesDocRef,
+      { total: increment(order.total), created: new Date().toISOString() },
+      { merge: true },
+    );
+
+    // Daily sales
+    const today = getDate().toFormat('yyyy-MM-dd');
+
+    const dailySalesDocRef = doc(db, 'dailySales', today);
+    await setDoc(
+      dailySalesDocRef,
+      { total: increment(order.total), created: new Date().toISOString() },
+      { merge: true },
+    );
+
+    // Monthly sales
+    const month = getDate().toFormat('yyyy-MM');
+    const monthlySalesDocRef = doc(db, 'monthlySales', month);
+    await setDoc(
+      monthlySalesDocRef,
+      { total: increment(order.total), created: new Date().toISOString() },
+      { merge: true },
+    );
+
+    console.log('Success', `Order #${orderNumber} added!`);
   } catch (error) {
-    console.error('Failed to add current order:', error);
-    Alert.alert('Failed to add current order');
+    console.log('Failed to add current order');
     throw error;
   }
 }
 
-export async function updateOrder(orderId: string, status: OrderStatus) {
+export async function completeOrder(orderId: string, status: OrderStatus) {
   try {
     const orderDoc = doc(db, 'currentOrders', orderId);
     const orderHistoryDoc = doc(db, 'orderHistory', orderId);
 
     await deleteDoc(orderDoc);
 
-    if (status) {
-      await updateDoc(orderHistoryDoc, {
-        status: status,
-      });
-    }
+    await updateDoc(orderHistoryDoc, {
+      status: status,
+    });
 
-    Alert.alert('Success', 'Order updated successfully!');
+    console.log('Success', 'Order updated successfully!');
   } catch (error) {
-    Alert.alert('Error', 'Failed to update current order');
+    console.log('Error', 'Failed to update current order');
     throw error;
   }
 }
@@ -192,20 +237,132 @@ export async function updateOrder(orderId: string, status: OrderStatus) {
 // Order History Management
 
 // Subscribe to realtime updates of order history
-export function subscribeToOrderHistory(onUpdate: any, onError: any) {
-  const currentOrdersCollection = collection(db, 'orderHistory');
+export function subscribeToOrderHistory(
+  onUpdate: (orders: Order[]) => void,
+  onError: (error: any) => void,
+) {
+  const orderHistoryCollection = collection(db, 'orderHistory');
+
+  // Query: order by createdAt descending (latest first), limit to 200 items
+  const orderHistoryQuery = query(
+    orderHistoryCollection,
+    orderBy('created', 'desc'),
+    limit(200),
+  );
 
   const unsubscribe = onSnapshot(
-    currentOrdersCollection,
+    orderHistoryQuery,
     querySnapshot => {
-      const currentOrders: Order[] = [];
+      const orderHistory: Order[] = [];
       querySnapshot.forEach(docSnap => {
-        currentOrders.push({
+        orderHistory.push({
           ...(docSnap.data() as Order),
           id: docSnap.id,
         });
       });
-      onUpdate(currentOrders);
+      onUpdate(orderHistory);
+    },
+    error => {
+      console.error('Realtime update error:', error);
+      if (onError) onError(error);
+    },
+  );
+
+  return unsubscribe;
+}
+
+// Subscribe to realtime updates daily sales
+export function subscribeToDailySales(
+  onUpdate: (totals: Sales[]) => void,
+  onError: (error: any) => void,
+) {
+  const dailySalesCollection = collection(db, 'dailySales');
+
+  const dailySalesQuery = query(
+    dailySalesCollection,
+    orderBy('created', 'desc'),
+    limit(31),
+  );
+
+  const unsubscribe = onSnapshot(
+    dailySalesQuery,
+    querySnapshot => {
+      const dailySales: Sales[] = [];
+      querySnapshot.forEach(docSnap => {
+        dailySales.push({
+          ...(docSnap.data() as Sales),
+          id: docSnap.id,
+        });
+      });
+      onUpdate(dailySales);
+    },
+    error => {
+      console.error('Realtime update error:', error);
+      if (onError) onError(error);
+    },
+  );
+
+  return unsubscribe;
+}
+
+// Subscribe to realtime updates monthly sales
+export function subscribeToMonthlySales(
+  onUpdate: (totals: Sales[]) => void,
+  onError: (error: any) => void,
+) {
+  const monthlySalesCollection = collection(db, 'monthlySales');
+
+  const monthlySalesQuery = query(
+    monthlySalesCollection,
+    orderBy('created', 'desc'),
+    limit(12),
+  );
+
+  const unsubscribe = onSnapshot(
+    monthlySalesQuery,
+    querySnapshot => {
+      const monthlySales: Sales[] = [];
+      querySnapshot.forEach(docSnap => {
+        monthlySales.push({
+          ...(docSnap.data() as Sales),
+          id: docSnap.id,
+        });
+      });
+      onUpdate(monthlySales);
+    },
+    error => {
+      console.error('Realtime update error:', error);
+      if (onError) onError(error);
+    },
+  );
+
+  return unsubscribe;
+}
+
+// Subscribe to realtime updates of total sales
+export function subscribeToTotalSales(
+  onUpdate: (total: Sales) => void,
+  onError: (error: any) => void,
+) {
+  const totalSalesDocRef = doc(db, 'sales', 'totalSales');
+
+  const unsubscribe = onSnapshot(
+    totalSalesDocRef,
+    docSnap => {
+      if (docSnap.exists()) {
+        const totalSales = {
+          ...(docSnap.data() as Sales),
+          id: docSnap.id,
+        };
+        onUpdate(totalSales);
+      } else {
+        console.log('No total sales document found');
+        onUpdate({
+          total: 0,
+          id: docSnap.id,
+          created: '',
+        });
+      }
     },
     error => {
       console.error('Realtime update error:', error);

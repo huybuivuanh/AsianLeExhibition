@@ -2,16 +2,8 @@ import './global.css';
 import 'react-native-reanimated'; // ensure this is at the top
 import 'react-native-gesture-handler';
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-import { MenuDataProvider } from './DataManagement/MenuDataProvider';
-import { CurrentOrderDataProvider } from './DataManagement/CurrentOrderDataProvider';
-import { OrderHistoryDataProvider } from './DataManagement/OrderHistoryDataProvider';
-import { Provider } from 'react-redux';
-import { store } from './Redux/Store';
 
 import TakeOrder from './Components/Tabs/TakeOrderTab/TakeOrder';
 import Cart from './Components/Tabs/TakeOrderTab/Cart';
@@ -19,6 +11,7 @@ import CurrentOrders from './Components/Tabs/CurrentOrders';
 import Menu from './Components/Tabs/Menu';
 import OrderHistory from './Components/Tabs/OrderHistory';
 import Sales from './Components/Tabs/Sales';
+import { AppProviders } from './Providers/Providers';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -39,29 +32,17 @@ const TabNavigator = () => (
   </Tab.Navigator>
 );
 
-const App = () => {
-  return (
-    <Provider store={store}>
-      <GestureHandlerRootView>
-        <NavigationContainer>
-          <MenuDataProvider>
-            <CurrentOrderDataProvider>
-              <OrderHistoryDataProvider>
-                <Stack.Navigator>
-                  <Stack.Screen
-                    name="MainTabs"
-                    component={TabNavigator}
-                    options={{ headerShown: false }}
-                  />
-                  <Stack.Screen name="Cart" component={Cart} />
-                </Stack.Navigator>
-              </OrderHistoryDataProvider>
-            </CurrentOrderDataProvider>
-          </MenuDataProvider>
-        </NavigationContainer>
-      </GestureHandlerRootView>
-    </Provider>
-  );
-};
+const App = () => (
+  <AppProviders>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="MainTabs"
+        component={TabNavigator}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Cart" component={Cart} />
+    </Stack.Navigator>
+  </AppProviders>
+);
 
 export default App;

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { subscribeToCurrentOrders, sortOrders } from './DataManager';
-import { setCurrentOrders } from '../Redux/CurrentOrderSlice';
+import { subscribeToMenuItems } from '../DataManagement/DataManager';
+import { setMenuItems } from '../Redux/MenuSlice';
 
-export const CurrentOrderDataProvider = ({
+export const MenuDataProvider = ({
   children,
 }: {
   children: React.ReactNode;
@@ -11,8 +11,8 @@ export const CurrentOrderDataProvider = ({
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const unsubscribe = subscribeToCurrentOrders(
-      (orders: Order[]) => dispatch(setCurrentOrders(sortOrders(orders))),
+    const unsubscribe = subscribeToMenuItems(
+      (items: MenuItem[]) => dispatch(setMenuItems(items)),
       (error: any) => console.error(error),
     );
 

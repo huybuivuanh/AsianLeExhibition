@@ -24,7 +24,7 @@ const Cart = () => {
               <Text className="text-base">
                 {item.name} - ${item.price}
               </Text>
-              <View className="flex-row items-center">
+              <View className="flex-row items-center gap-2">
                 <Button
                   title="-"
                   onPress={() => item.id && dispatch(removeItem(item.id))}

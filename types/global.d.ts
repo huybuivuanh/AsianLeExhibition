@@ -24,4 +24,10 @@ declare global {
     status: OrderStatus;
     created?: string;
   };
+
+  type Sales = {
+    id?: string;
+    total: number;
+    created: string;
+  };
 }

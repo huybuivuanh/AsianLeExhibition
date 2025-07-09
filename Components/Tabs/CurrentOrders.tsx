@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, { useState } from 'react';
-import { updateOrder, formattedDate } from '../../DataManagement/DataManager';
+import { completeOrder, formattedDate } from '../../DataManagement/DataManager';
 import { OrderStatus } from '../../types/enum';
 import { RootState } from '../../Redux/Store';
 import { useSelector } from 'react-redux';
@@ -58,7 +58,8 @@ const CurrentOrders = () => {
                 color="blue"
                 onPress={() => {
                   if (item.id) {
-                    updateOrder(item.id, OrderStatus.Completed);
+                    completeOrder(item.id, OrderStatus.Completed);
+                    Alert.alert(`Completed order #${item.orderNumber}`);
                   } else {
                     Alert.alert('Error', 'Order ID is missing.');
                   }
@@ -82,7 +83,12 @@ const CurrentOrders = () => {
                   title="Cancel"
                   color="red"
                   onPress={() => {
-                    Alert.alert(`Canceled order ${item.orderNumber}`);
+                    if (item.id) {
+                      completeOrder(item.id, OrderStatus.Canceled);
+                      Alert.alert(`Canceled order #${item.orderNumber}`);
+                    } else {
+                      Alert.alert('Error', 'Order ID is missing.');
+                    }
                   }}
                 />
               </View>
