@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Alert,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
 import { subscribeToMenuItems } from '../../../DataManagement/DataManager';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +21,7 @@ const TakeOrder = ({
   const [menuItems, setMenuItems] = useState([] as MenuItem[]);
   const [addedItemId, setAddedItemId] = useState<string | null>(null);
   const [loading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const dispatch = useDispatch();
   const order = useSelector((state: RootState) => state.order);
@@ -27,10 +35,21 @@ const TakeOrder = ({
     return () => unsubscribe();
   }, []);
 
+  const filteredMenuItems = menuItems.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   return (
     <View className="flex-1 p-4 bg-white">
+      <TextInput
+        className="border border-gray-300 rounded-xl p-4 mb-4"
+        placeholder="Search menu items..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
       <FlatList
-        data={menuItems}
+        data={filteredMenuItems}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <View

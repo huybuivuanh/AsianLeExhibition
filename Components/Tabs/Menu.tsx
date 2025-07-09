@@ -17,7 +17,12 @@ const Menu = () => {
   );
   const [newItemName, setNewItemName] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const filteredMenuItems = menuItems.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
 
   const handleAddMenuItem = async () => {
     if (!newItemName.trim()) {
@@ -57,8 +62,15 @@ const Menu = () => {
 
   return (
     <View className="flex-1 p-4 bg-white">
+      <TextInput
+        className="border border-gray-300 rounded-xl p-4 mb-4"
+        placeholder="Search menu items..."
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
       <FlatList
-        data={menuItems}
+        data={filteredMenuItems}
         keyExtractor={(item, index) => item.id || index.toString()}
         renderItem={({ item }) => (
           <View className="bg-gray-100 rounded-xl p-4 mb-3 shadow-sm flex-row justify-between items-center">
