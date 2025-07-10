@@ -71,13 +71,31 @@ export async function addMenuItem(item: { name: string; price: number }) {
 }
 
 // Delete a menu item by its document ID
-export async function deleteMenuItem(itemId: string) {
+export async function deleteMenuItem(itemID: string) {
   try {
-    const itemDoc = doc(db, 'menuItems', itemId);
+    const itemDoc = doc(db, 'menuItems', itemID);
     await deleteDoc(itemDoc);
     console.log('Success', 'Menu item deleted!');
   } catch (error) {
     console.log('Failed to delete menu item');
+    throw error;
+  }
+}
+
+// Update menu item
+export async function updateMenuItem(item: MenuItem) {
+  try {
+    if (!item.id) {
+      throw new Error('Menu item id is required for update.');
+    }
+    const menuItemDoc = doc(db, 'menuItems', item.id);
+
+    await updateDoc(menuItemDoc, {
+      name: item.name,
+      price: item.price,
+    });
+  } catch (error) {
+    console.log('Failed to update menu item');
     throw error;
   }
 }
@@ -218,10 +236,10 @@ export async function submitCurrentOrder(order: Order) {
   }
 }
 
-export async function completeOrder(orderId: string, status: OrderStatus) {
+export async function completeOrder(orderID: string, status: OrderStatus) {
   try {
-    const orderDoc = doc(db, 'currentOrders', orderId);
-    const orderHistoryDoc = doc(db, 'orderHistory', orderId);
+    const orderDoc = doc(db, 'currentOrders', orderID);
+    const orderHistoryDoc = doc(db, 'orderHistory', orderID);
 
     await deleteDoc(orderDoc);
 

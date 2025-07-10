@@ -11,3 +11,9 @@ export enum TimeFormat {
   OnlyDate = 'OnlyDate',
   OnlyMonth = 'OnlyMonth',
 }
+
+export enum RouteName {
+  Cart = 'Cart',
+  AddMenuItem = 'AddMenuItem',
+  EditMenuItem = 'EditMenuItem',
+}
