@@ -4,6 +4,7 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import Toast from 'react-native-toast-message';
 
 import TakeOrder from './Components/Tabs/TakeOrderTab/TakeOrder';
 import Cart from './Components/Tabs/TakeOrderTab/Cart';
@@ -13,6 +14,7 @@ import AddMenuItem from './Components/Tabs/MenuTab/AddMenuItem';
 import EditMenuItem from './Components/Tabs/MenuTab/EditMenuItem';
 import OrderHistory from './Components/Tabs/OrderHistory';
 import Sales from './Components/Tabs/Sales';
+
 import { AppProviders } from './Providers/Providers';
 import { RootStackParamList } from './Navigation/RootStackParamList';
 import { RouteName } from './types/enum';
@@ -48,6 +50,7 @@ const App = () => (
       <Stack.Screen name={RouteName.AddMenuItem} component={AddMenuItem} />
       <Stack.Screen name={RouteName.EditMenuItem} component={EditMenuItem} />
     </Stack.Navigator>
+    <Toast />
   </AppProviders>
 );
 

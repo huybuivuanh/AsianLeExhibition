@@ -4,6 +4,7 @@ import { addMenuItem } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
 import { RouteName } from '../../../types/enum';
+import Toast from 'react-native-toast-message';
 
 type Props = NativeStackScreenProps<RootStackParamList, RouteName.AddMenuItem>;
 
@@ -22,6 +23,10 @@ const AddMenuItem = ({ navigation }: Props) => {
       await addMenuItem({
         name: newItemName.trim(),
         price: parseFloat(newItemPrice) || 0,
+      });
+      Toast.show({
+        type: 'success',
+        text1: 'Item added!',
       });
       navigation.goBack();
       setNewItemName('');
