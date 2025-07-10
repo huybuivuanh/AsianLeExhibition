@@ -8,16 +8,15 @@ import {
   TextInput,
 } from 'react-native';
 import { subscribeToMenuItems } from '../../../DataManagement/DataManager';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../Redux/store';
 import { addItem } from '../../../Redux/OrderSlice';
+import { RootStackParamList } from '../../../Navigation/RootStackParamList';
 
-const TakeOrder = ({
-  navigation,
-}: {
-  navigation: NativeStackNavigationProp<any>;
-}) => {
+type Props = NativeStackScreenProps<RootStackParamList>;
+
+const TakeOrder = ({ navigation }: Props) => {
   const [menuItems, setMenuItems] = useState([] as MenuItem[]);
   const [addedItemId, setAddedItemId] = useState<string | null>(null);
   const [loading] = useState(false);

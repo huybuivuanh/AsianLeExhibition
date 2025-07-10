@@ -46,7 +46,7 @@ const Menu = ({ navigation }: Props) => {
     <View className="flex-1 p-4 bg-white gap-2">
       <TouchableOpacity
         className="bg-orange-600 py-4 rounded-xl items-center"
-        onPress={() => navigation.navigate('AddMenuItem', {})}
+        onPress={() => navigation.navigate('AddMenuItem')}
         disabled={loading}
       >
         <Text className="text-white text-base font-semibold">
