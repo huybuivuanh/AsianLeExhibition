@@ -5,17 +5,17 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import TakeOrder from './Components/Tabs/TakeOrderTab/TakeOrder';
-import Cart from './Components/Tabs/TakeOrderTab/Cart';
-import CurrentOrders from './Components/Tabs/CurrentOrders';
-import Menu from './Components/Tabs/MenuTab/Menu';
-import AddMenuItem from './Components/Tabs/MenuTab/AddMenuItem';
-import EditMenuItem from './Components/Tabs/MenuTab/EditMenuItem';
-import OrderHistory from './Components/Tabs/OrderHistory';
-import Sales from './Components/Tabs/Sales';
-import { AppProviders } from './Providers/Providers';
-import { RootStackParamList } from './Navigation/RootStackParamList';
-import { RouteName } from './types/enum';
+import TakeOrder from './src/Components/Screens/TakeOrderScreen/TakeOrder';
+import Cart from './src/Components/Screens/TakeOrderScreen/Cart';
+import CurrentOrders from './src/Components/Screens/CurrentOrders';
+import Menu from './src/Components/Screens/MenuScreen/Menu';
+import AddMenuItem from './src/Components/Screens/MenuScreen/AddMenuItem';
+import EditMenuItem from './src/Components/Screens/MenuScreen/EditMenuItem';
+import OrderHistory from './src/Components/Screens/OrderHistory';
+import Sales from './src/Components/Screens/Sales';
+import { AppProviders } from './src/Providers/Providers';
+import { RootStackParamList } from './src/Navigation/RootStackParamList';
+import { RouteName } from './src/types/enum';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
