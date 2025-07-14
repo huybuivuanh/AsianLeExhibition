@@ -1,20 +1,13 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { RootState } from '../../Redux/store';
-import { useSelector } from 'react-redux';
 import { formattedDate } from '../../DataManagement/DataManager';
 import { TimeFormat } from '../../types/enum';
+import { useSales } from '../../Redux/hooks';
 
 const Sales = () => {
-  const dailySales = useSelector(
-    (state: RootState) => state.sales.dailySales as Sales[],
-  );
-  const monthlySales = useSelector(
-    (state: RootState) => state.sales.monthlySales as Sales[],
-  );
-  const totalSales = useSelector(
-    (state: RootState) => state.sales.totalSales as Sales,
-  );
+  const dailySales = useSales().dailySales as Sales[];
+  const monthlySales = useSales().monthlySales as Sales[];
+  const totalSales = useSales().totalSales as Sales;
 
   const [expandedSaleId, setExpandedSaleId] = useState<string | null>(null);
 

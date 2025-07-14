@@ -53,13 +53,17 @@ export const orderSlice = createSlice({
         state.numberOfItems -= 1;
       }
     },
+    setOrder: (state, action: PayloadAction<Order>) => {
+      return action.payload;
+    },
     clearOrder: state => {
       state.orderItems = [];
       state.total = 0;
       state.numberOfItems = 0;
+      state.status = OrderStatus.Pending;
     },
   },
 });
 
-export const { addItem, removeItem, clearOrder } = orderSlice.actions;
+export const { addItem, removeItem, setOrder, clearOrder } = orderSlice.actions;
 export default orderSlice.reducer;

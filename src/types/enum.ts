@@ -16,4 +16,5 @@ export enum RouteName {
   Cart = 'Cart',
   AddMenuItem = 'AddMenuItem',
   EditMenuItem = 'EditMenuItem',
+  EditOrder = 'EditOrder',
 }

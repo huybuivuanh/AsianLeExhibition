@@ -1,14 +1,18 @@
 import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { completeOrder, formattedDate } from '../../DataManagement/DataManager';
-import { OrderStatus, TimeFormat } from '../../types/enum';
-import { RootState } from '../../Redux/Store';
-import { useSelector } from 'react-redux';
+import {
+  completeOrder,
+  formattedDate,
+} from '../../../DataManagement/DataManager';
+import { OrderStatus, TimeFormat } from '../../../types/enum';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../../Navigation/RootStackParamList';
+import { useCurrentOrders } from '../../../Redux/hooks';
 
-const CurrentOrders = () => {
-  const currentOrders = useSelector(
-    (state: RootState) => state.currentOrders.orders as Order[],
-  );
+type Props = NativeStackScreenProps<RootStackParamList>;
+
+const CurrentOrders = ({ navigation }: Props) => {
+  const currentOrders = useCurrentOrders().orders as Order[];
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [loading] = useState(false);
 
@@ -77,6 +81,14 @@ const CurrentOrders = () => {
                   {item.status}
                 </Text>
               </View>
+              <TouchableOpacity
+                className="bg-orange-500 px-4 py-2 rounded-full"
+                onPress={() => {
+                  navigation.navigate('EditOrder', { order: item });
+                }}
+              >
+                <Text className="text-white font-semibold">Edit</Text>
+              </TouchableOpacity>
             </TouchableOpacity>
 
             {expandedOrderId === item.id && (

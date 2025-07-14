@@ -7,7 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import TakeOrder from './src/Components/Screens/TakeOrderScreen/TakeOrder';
 import Cart from './src/Components/Screens/TakeOrderScreen/Cart';
-import CurrentOrders from './src/Components/Screens/CurrentOrders';
+import CurrentOrders from './src/Components/Screens/CurrentOrderScreen/CurrentOrders';
 import Menu from './src/Components/Screens/MenuScreen/Menu';
 import AddMenuItem from './src/Components/Screens/MenuScreen/AddMenuItem';
 import EditMenuItem from './src/Components/Screens/MenuScreen/EditMenuItem';
@@ -16,6 +16,7 @@ import Sales from './src/Components/Screens/Sales';
 import { AppProviders } from './src/Providers/Providers';
 import { RootStackParamList } from './src/Navigation/RootStackParamList';
 import { RouteName } from './src/types/enum';
+import EditOrder from './src/Components/Screens/CurrentOrderScreen/EditOrder';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -47,6 +48,7 @@ const App = () => (
       <Stack.Screen name={RouteName.Cart} component={Cart} />
       <Stack.Screen name={RouteName.AddMenuItem} component={AddMenuItem} />
       <Stack.Screen name={RouteName.EditMenuItem} component={EditMenuItem} />
+      <Stack.Screen name={RouteName.EditOrder} component={EditOrder} />
     </Stack.Navigator>
   </AppProviders>
 );

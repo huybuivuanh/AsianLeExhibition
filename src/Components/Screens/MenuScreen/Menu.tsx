@@ -8,17 +8,14 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { deleteMenuItem } from '../../../DataManagement/DataManager';
-import { RootState } from '../../../Redux/Store';
-import { useSelector } from 'react-redux';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
+import { useMenu } from '../../../Redux/hooks';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 const Menu = ({ navigation }: Props) => {
-  const menuItems = useSelector(
-    (state: RootState) => state.menu.items as MenuItem[],
-  );
+  const menuItems = useMenu().items as MenuItem[];
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
 

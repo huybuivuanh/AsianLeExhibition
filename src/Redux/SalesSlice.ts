@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   dailySales: [],
   monthlySales: [],
-  totalSales: { total: 0, id: '', created: '' }, // adjust type to match your Sales type
+  totalSales: { total: 0, id: '', created: '' },
 };
 
 export const salesSlice = createSlice({

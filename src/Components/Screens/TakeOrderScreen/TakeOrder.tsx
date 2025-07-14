@@ -9,10 +9,10 @@ import {
 } from 'react-native';
 import { subscribeToMenuItems } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../Redux/store';
+import { useDispatch } from 'react-redux';
 import { addItem } from '../../../Redux/OrderSlice';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
+import { useOrder } from '../../../Redux/hooks';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -23,7 +23,7 @@ const TakeOrder = ({ navigation }: Props) => {
   const [searchQuery, setSearchQuery] = useState('');
 
   const dispatch = useDispatch();
-  const order = useSelector((state: RootState) => state.order);
+  const order = useOrder() as Order;
 
   useEffect(() => {
     const unsubscribe = subscribeToMenuItems(

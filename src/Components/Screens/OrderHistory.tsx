@@ -2,13 +2,10 @@ import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import { formattedDate } from '../../DataManagement/DataManager';
 import { OrderStatus, TimeFormat } from '../../types/enum';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../Redux/Store';
+import { useOrderHistory } from '../../Redux/hooks';
 
 const OrderHistory = () => {
-  const orderHistory = useSelector(
-    (state: RootState) => state.orderHistory.orders as Order[],
-  );
+  const orderHistory = useOrderHistory().orders as Order[];
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [loading] = useState(false);
 

@@ -184,7 +184,7 @@ export async function submitCurrentOrder(order: Order) {
       orderNumber,
       orderItems: order.orderItems,
       total: order.total,
-      numberOfItem: order.numberOfItems,
+      numberOfItems: order.numberOfItems,
       status: OrderStatus.InProgress,
       created: new Date().toISOString(),
     };
@@ -250,6 +250,32 @@ export async function completeOrder(orderID: string, status: OrderStatus) {
     console.log('Success', 'Order updated successfully!');
   } catch (error) {
     console.log('Error', 'Failed to update current order');
+    throw error;
+  }
+}
+
+// Update order
+export async function updateOrder(order: Order) {
+  if (!order.id) {
+    throw new Error('Order id is required for update.');
+  }
+
+  const currentOrdersDoc = doc(db, 'currentOrders', order.id);
+  const orderHistoryDoc = doc(db, 'orderHistory', order.id);
+
+  const orderData = {
+    orderItems: order.orderItems,
+    total: order.total,
+    numberOfItems: order.numberOfItems,
+  };
+
+  try {
+    await Promise.all([
+      updateDoc(currentOrdersDoc, orderData),
+      updateDoc(orderHistoryDoc, orderData),
+    ]);
+  } catch (error) {
+    console.log('Failed to update order:', error);
     throw error;
   }
 }

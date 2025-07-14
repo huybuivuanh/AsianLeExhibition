@@ -1,14 +1,14 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { addItem, removeItem, clearOrder } from '../../../Redux/OrderSlice';
-import { RootState } from '../../../Redux/store';
 import { submitCurrentOrder } from '../../../DataManagement/DataManager';
 import { useNavigation } from '@react-navigation/native';
+import { useOrder } from '../../../Redux/hooks';
 
 const Cart = () => {
   const dispatch = useDispatch();
-  const order = useSelector((state: RootState) => state.order);
+  const order = useOrder() as Order;
   const navigation = useNavigation();
 
   return (
