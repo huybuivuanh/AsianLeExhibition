@@ -3,7 +3,6 @@ import {
   View,
   Text,
   FlatList,
-  Alert,
   TouchableOpacity,
   TextInput,
 } from 'react-native';
@@ -13,6 +12,8 @@ import { useDispatch } from 'react-redux';
 import { addItem } from '../../../Redux/OrderSlice';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
 import { useOrder } from '../../../Redux/hooks';
+import { showAlert } from '../../../Notification/Alert';
+import { AlertType } from '../../../types/enum';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -28,7 +29,8 @@ const TakeOrder = ({ navigation }: Props) => {
   useEffect(() => {
     const unsubscribe = subscribeToMenuItems(
       (items: React.SetStateAction<MenuItem[]>) => setMenuItems(items),
-      (error: any) => Alert.alert('Failed to fetch menu items', error),
+      (error: any) =>
+        showAlert(AlertType.Error, `Failed to fetch menu items: ${error}`),
     );
 
     return () => unsubscribe();
@@ -63,9 +65,14 @@ const TakeOrder = ({ navigation }: Props) => {
             <TouchableOpacity
               className="bg-green-500 px-4 py-2 rounded-full"
               onPress={() => {
-                dispatch(addItem(item));
-                setAddedItemId(item.id ?? null);
-                setTimeout(() => setAddedItemId(null), 180);
+                try {
+                  dispatch(addItem(item));
+                  showAlert(AlertType.Success, 'Item added to order!');
+                  setAddedItemId(item.id ?? null);
+                  setTimeout(() => setAddedItemId(null), 180);
+                } catch (error) {
+                  showAlert(AlertType.Error, 'Failed to add item to order');
+                }
               }}
             >
               <Text className="text-white text-lg font-semibold">+</Text>

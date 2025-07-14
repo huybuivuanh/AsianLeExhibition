@@ -4,13 +4,14 @@ import {
   View,
   FlatList,
   TextInput,
-  Alert,
   TouchableOpacity,
 } from 'react-native';
 import { deleteMenuItem } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
 import { useMenu } from '../../../Redux/hooks';
+import { showAlert } from '../../../Notification/Alert';
+import { AlertType } from '../../../types/enum';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -25,16 +26,16 @@ const Menu = ({ navigation }: Props) => {
 
   const handleDeleteMenuItem = async (id: string | undefined) => {
     if (!id) {
-      Alert.alert('Error', 'Invalid menu item ID');
+      showAlert(AlertType.Error, 'Invalid menu item ID');
       return;
     }
     setLoading(true);
     try {
       await deleteMenuItem(id);
-      Alert.alert('Success', 'Menu item deleted successfully');
+      showAlert(AlertType.Success, 'Menu item deleted successfully');
     } catch (error) {
       console.error('Failed to delete menu item:', error);
-      Alert.alert('Error', 'Failed to delete menu item');
+      showAlert(AlertType.Error, 'Failed to delete menu item');
     }
     setLoading(false);
   };
@@ -71,9 +72,6 @@ const Menu = ({ navigation }: Props) => {
               <View className="flex-row space-x-2">
                 <TouchableOpacity
                   className="bg-yellow-500 px-3 py-1 rounded-full"
-                  // onPress={() =>
-                  //   navigation.navigate('EditMenuItem', { item: item })
-                  // }
                   onPress={() =>
                     navigation.navigate('EditMenuItem', {
                       item: item,

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text } from 'react-native';
 import { addMenuItem } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
-import { RouteName } from '../../../types/enum';
+import { AlertType, RouteName } from '../../../types/enum';
+import { showAlert } from '../../../Notification/Alert';
 
 type Props = NativeStackScreenProps<RootStackParamList, RouteName.AddMenuItem>;
 
@@ -14,7 +15,7 @@ const AddMenuItem = ({ navigation }: Props) => {
 
   const handleAddMenuItem = async () => {
     if (!newItemName.trim()) {
-      Alert.alert('Please enter a menu item name');
+      showAlert(AlertType.Error, 'Please enter a menu item name');
       return;
     }
     setLoading(true);
@@ -23,12 +24,13 @@ const AddMenuItem = ({ navigation }: Props) => {
         name: newItemName.trim(),
         price: parseFloat(newItemPrice) || 0,
       });
+      showAlert(AlertType.Success, 'Menu item added successfully');
       navigation.goBack();
       setNewItemName('');
       setNewItemPrice('');
     } catch (error) {
       console.error('Failed to add menu item:', error);
-      Alert.alert('Error', 'Failed to add menu item');
+      showAlert(AlertType.Error, 'Error: Failed to add menu item');
     }
     setLoading(false);
   };

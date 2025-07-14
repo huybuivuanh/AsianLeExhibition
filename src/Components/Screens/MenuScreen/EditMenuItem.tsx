@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { updateMenuItem } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
-import { RouteName } from '../../../types/enum';
+import { AlertType, RouteName } from '../../../types/enum';
+import { showAlert } from '../../../Notification/Alert';
 
 type Props = NativeStackScreenProps<RootStackParamList, RouteName.EditMenuItem>;
 
@@ -15,7 +16,7 @@ const EditMenuItem = ({ route, navigation }: Props) => {
 
   const handleUpdate = async () => {
     if (!name.trim()) {
-      Alert.alert('Please enter a menu item name');
+      showAlert(AlertType.Error, 'Please enter a menu item name');
       return;
     }
     setLoading(true);
@@ -27,11 +28,11 @@ const EditMenuItem = ({ route, navigation }: Props) => {
         created: item.created,
       };
       await updateMenuItem(updatedItem);
-      Alert.alert('Success', 'Menu item updated successfully');
+      showAlert(AlertType.Success, 'Menu item updated successfully');
       navigation.goBack();
     } catch (error) {
       console.error('Failed to update menu item:', error);
-      Alert.alert('Error', 'Failed to update menu item');
+      showAlert(AlertType.Error, 'Failed to update menu item');
     }
     setLoading(false);
   };

@@ -10,8 +10,9 @@ import {
 import { updateOrder } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
-import { RouteName } from '../../../types/enum';
+import { AlertType, RouteName } from '../../../types/enum';
 import { useOrder } from '../../../Redux/hooks';
+import { showAlert } from '../../../Notification/Alert';
 
 type Props = NativeStackScreenProps<RootStackParamList, RouteName.EditOrder>;
 
@@ -74,8 +75,13 @@ const EditOrder = ({ route, navigation }: Props) => {
           <TouchableOpacity
             className="bg-blue-600 py-3 rounded-xl items-center mb-3"
             onPress={() => {
-              updateOrder(orderToEdit);
-              dispatch(clearOrder());
+              try {
+                updateOrder(orderToEdit);
+                dispatch(clearOrder());
+                showAlert(AlertType.Success, 'Order Updated');
+              } catch (error) {
+                showAlert(AlertType.Error, 'Failed To Edit Order');
+              }
               navigation.goBack();
             }}
           >

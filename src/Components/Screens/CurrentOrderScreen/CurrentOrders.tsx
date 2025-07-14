@@ -1,13 +1,14 @@
-import { View, Text, FlatList, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import {
   completeOrder,
   formattedDate,
 } from '../../../DataManagement/DataManager';
-import { OrderStatus, TimeFormat } from '../../../types/enum';
+import { AlertType, OrderStatus, TimeFormat } from '../../../types/enum';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
 import { useCurrentOrders } from '../../../Redux/hooks';
+import { showAlert } from '../../../Notification/Alert';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -23,18 +24,18 @@ const CurrentOrders = ({ navigation }: Props) => {
   const handleComplete = (id: string | undefined, orderNumber: number) => {
     if (id) {
       completeOrder(id, OrderStatus.Completed);
-      Alert.alert(`Completed order #${orderNumber}`);
+      showAlert(AlertType.Success, `Completed order #${orderNumber}`);
     } else {
-      Alert.alert('Error', 'Order ID is missing.');
+      showAlert(AlertType.Error, 'Error: Order ID is missing.');
     }
   };
 
   const handleCancel = (id: string | undefined, orderNumber: number) => {
     if (id) {
       completeOrder(id, OrderStatus.Canceled);
-      Alert.alert(`Canceled order #${orderNumber}`);
+      showAlert(AlertType.Success, `Canceled order #${orderNumber}`);
     } else {
-      Alert.alert('Error', 'Order ID is missing.');
+      showAlert(AlertType.Error, 'Error: Order ID is missing.');
     }
   };
 
@@ -117,7 +118,10 @@ const CurrentOrders = ({ navigation }: Props) => {
                       if (item.orderNumber !== undefined) {
                         handleComplete(item.id, item.orderNumber);
                       } else {
-                        Alert.alert('Error', 'Order number is missing.');
+                        showAlert(
+                          AlertType.Error,
+                          'Error: Order number is missing.',
+                        );
                       }
                     }}
                   >
@@ -130,7 +134,10 @@ const CurrentOrders = ({ navigation }: Props) => {
                       if (item.orderNumber !== undefined) {
                         handleCancel(item.id, item.orderNumber);
                       } else {
-                        Alert.alert('Error', 'Order number is missing.');
+                        showAlert(
+                          AlertType.Error,
+                          'Error: Order number is missing.',
+                        );
                       }
                     }}
                   >

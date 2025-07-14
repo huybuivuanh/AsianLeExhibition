@@ -3,13 +3,14 @@ import {
   View,
   Text,
   FlatList,
-  Alert,
   TouchableOpacity,
   TextInput,
 } from 'react-native';
 import { subscribeToMenuItems } from '../../../DataManagement/DataManager';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../../Redux/OrderSlice';
+import { showAlert } from '../../../Notification/Alert';
+import { AlertType } from '../../../types/enum';
 
 const AddItemToOrder = () => {
   const [menuItems, setMenuItems] = useState([] as MenuItem[]);
@@ -22,7 +23,7 @@ const AddItemToOrder = () => {
   useEffect(() => {
     const unsubscribe = subscribeToMenuItems(
       (items: React.SetStateAction<MenuItem[]>) => setMenuItems(items),
-      (error: any) => Alert.alert('Failed to fetch menu items', error),
+      (error: any) => showAlert(AlertType.Error, error),
     );
 
     return () => unsubscribe();
@@ -57,9 +58,14 @@ const AddItemToOrder = () => {
             <TouchableOpacity
               className="bg-green-500 px-4 py-2 rounded-full"
               onPress={() => {
-                dispatch(addItem(item));
-                setAddedItemId(item.id ?? null);
-                setTimeout(() => setAddedItemId(null), 180);
+                try {
+                  dispatch(addItem(item));
+                  setAddedItemId(item.id ?? null);
+                  showAlert(AlertType.Success, 'Item Added');
+                  setTimeout(() => setAddedItemId(null), 180);
+                } catch (error) {
+                  showAlert(AlertType.Error, `Failed To Add Item. ${error}`);
+                }
               }}
             >
               <Text className="text-white text-lg font-semibold">+</Text>

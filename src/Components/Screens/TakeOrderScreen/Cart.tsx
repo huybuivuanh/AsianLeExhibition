@@ -5,6 +5,8 @@ import { addItem, removeItem, clearOrder } from '../../../Redux/OrderSlice';
 import { submitCurrentOrder } from '../../../DataManagement/DataManager';
 import { useNavigation } from '@react-navigation/native';
 import { useOrder } from '../../../Redux/hooks';
+import { showAlert } from '../../../Notification/Alert';
+import { AlertType } from '../../../types/enum';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -52,8 +54,13 @@ const Cart = () => {
           <TouchableOpacity
             className="bg-blue-600 py-3 rounded-xl items-center mb-3"
             onPress={() => {
-              submitCurrentOrder(order);
-              dispatch(clearOrder());
+              try {
+                submitCurrentOrder(order);
+                dispatch(clearOrder());
+                showAlert(AlertType.Success, 'Order submitted');
+              } catch (error) {
+                showAlert(AlertType.Error, 'Failed to submit order');
+              }
               navigation.goBack();
             }}
           >

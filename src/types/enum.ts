@@ -19,3 +19,9 @@ export enum RouteName {
   EditOrder = 'EditOrder',
   AddItemToOrder = 'AddItemToOrder',
 }
+
+export enum AlertType {
+  Success = 'success',
+  Error = 'error',
+  Info = 'info',
+}
