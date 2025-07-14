@@ -17,4 +17,5 @@ export enum RouteName {
   AddMenuItem = 'AddMenuItem',
   EditMenuItem = 'EditMenuItem',
   EditOrder = 'EditOrder',
+  AddItemToOrder = 'AddItemToOrder',
 }

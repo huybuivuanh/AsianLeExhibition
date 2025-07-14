@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useDispatch } from 'react-redux';
 import {
@@ -11,7 +11,6 @@ import { updateOrder } from '../../../DataManagement/DataManager';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
 import { RouteName } from '../../../types/enum';
-import { useFocusEffect } from '@react-navigation/native';
 import { useOrder } from '../../../Redux/hooks';
 
 type Props = NativeStackScreenProps<RootStackParamList, RouteName.EditOrder>;
@@ -26,16 +25,22 @@ const EditOrder = ({ route, navigation }: Props) => {
   }, [order, dispatch]); // run only when 'order' changes
   const orderToEdit = useOrder() as Order;
 
-  useFocusEffect(
-    useCallback(() => {
-      return () => {
-        dispatch(clearOrder());
-      };
-    }, [dispatch]),
-  );
+  useEffect(() => {
+    return () => {
+      dispatch(clearOrder());
+    };
+  }, [dispatch]);
 
   return (
     <View className="flex-1 p-4 bg-white">
+      <TouchableOpacity
+        className="bg-green-500 items-center px-3 py-1 rounded-full"
+        onPress={() => {
+          navigation.navigate(RouteName.AddItemToOrder);
+        }}
+      >
+        <Text className="text-white text-lg font-semibold">Add Item</Text>
+      </TouchableOpacity>
       <FlatList
         data={orderToEdit.orderItems}
         keyExtractor={(item, index) => item.id || index.toString()}

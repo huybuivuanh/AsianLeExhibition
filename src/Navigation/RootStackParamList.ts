@@ -12,4 +12,5 @@ export type RootStackParamList = {
   AddMenuItem: undefined;
   EditMenuItem: EditMenuItemParams;
   EditOrder: EditOrderParams;
+  AddItemToOrder: undefined;
 };

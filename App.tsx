@@ -17,6 +17,7 @@ import { AppProviders } from './src/Providers/Providers';
 import { RootStackParamList } from './src/Navigation/RootStackParamList';
 import { RouteName } from './src/types/enum';
 import EditOrder from './src/Components/Screens/CurrentOrderScreen/EditOrder';
+import AddItemToOrder from './src/Components/Screens/CurrentOrderScreen/AddItemToOrder';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -46,9 +47,22 @@ const App = () => (
         options={{ headerShown: false }}
       />
       <Stack.Screen name={RouteName.Cart} component={Cart} />
-      <Stack.Screen name={RouteName.AddMenuItem} component={AddMenuItem} />
-      <Stack.Screen name={RouteName.EditMenuItem} component={EditMenuItem} />
+      <Stack.Screen
+        name={RouteName.AddMenuItem}
+        component={AddMenuItem}
+        options={{ title: 'Add Menu Item' }}
+      />
+      <Stack.Screen
+        name={RouteName.EditMenuItem}
+        component={EditMenuItem}
+        options={{ title: 'Edit Menu Item' }}
+      />
       <Stack.Screen name={RouteName.EditOrder} component={EditOrder} />
+      <Stack.Screen
+        name={RouteName.AddItemToOrder}
+        component={AddItemToOrder}
+        options={{ title: 'Add Item To Order' }}
+      />
     </Stack.Navigator>
   </AppProviders>
 );
