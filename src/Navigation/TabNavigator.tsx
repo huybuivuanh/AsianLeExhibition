@@ -17,7 +17,7 @@ export const TabNavigator = () => (
     }}
   >
     <Tab.Screen name="Take Order" component={TakeOrder} />
-    <Tab.Screen name="Current Orders" component={LiveOrders} />
+    <Tab.Screen name="Live Orders" component={LiveOrders} />
     <Tab.Screen name="Menu" component={Menu} />
     <Tab.Screen name="Order History" component={OrderHistory} />
     <Tab.Screen name="Sales" component={Sales} />

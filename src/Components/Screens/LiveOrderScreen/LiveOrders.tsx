@@ -149,7 +149,7 @@ const LiveOrders = ({ navigation }: Props) => {
         refreshing={loading}
         ListEmptyComponent={
           <View className="items-center mt-10">
-            <Text className="text-gray-500">No Current Orders.</Text>
+            <Text className="text-gray-500">No Live Orders.</Text>
           </View>
         }
       />

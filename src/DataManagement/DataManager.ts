@@ -99,9 +99,9 @@ export function subscribeToMenuItems(onUpdate: any, onError: any) {
   return unsubscribe;
 }
 
-// Current Orders Management
+// Live Orders Management
 
-// Subscribe to realtime updates of current orders
+// Subscribe to realtime updates of live orders
 export function subscribeToLiveOrders(
   onUpdate: (orders: Order[]) => void,
   onError: (error: any) => void,
@@ -129,7 +129,7 @@ export function subscribeToLiveOrders(
   return unsubscribe;
 }
 
-// Submit the current order to the 'liveOrders' collection
+// Submit the live order to the 'liveOrders' collection
 export async function submitLiveOrder(order: Order) {
   const liveOrdersCollectionRef = collection(db, 'liveOrders');
   const orderHistoryCollectionRef = collection(db, 'orderHistory');
@@ -205,7 +205,7 @@ export async function submitLiveOrder(order: Order) {
 
     console.log('Success', `Order #${orderNumber} added!`);
   } catch (error) {
-    console.log('Failed to add current order');
+    console.log('Failed to add live order');
     throw error;
   }
 }
@@ -223,7 +223,7 @@ export async function completeOrder(orderID: string, status: OrderStatus) {
 
     console.log('Success', 'Order updated successfully!');
   } catch (error) {
-    console.log('Error', 'Failed to update current order');
+    console.log('Error', 'Failed to update live order');
     throw error;
   }
 }
