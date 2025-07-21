@@ -108,7 +108,7 @@ export function subscribeToMenuItems(onUpdate: any, onError: any) {
     menuItemsCollection,
     querySnapshot => {
       const menuItems: MenuItem[] = [];
-      querySnapshot.forEach(docSnap => {
+      querySnapshot.forEach((docSnap: { data: () => MenuItem; id: string }) => {
         menuItems.push({
           ...(docSnap.data() as MenuItem),
           id: docSnap.id,
@@ -138,7 +138,7 @@ export function subscribeToCurrentOrders(
     currentOrdersCollection,
     querySnapshot => {
       const currentOrders: Order[] = [];
-      querySnapshot.forEach(docSnap => {
+      querySnapshot.forEach((docSnap: { data: () => Order; id: string }) => {
         currentOrders.push({
           ...(docSnap.data() as Order),
           id: docSnap.id,
@@ -300,7 +300,7 @@ export function subscribeToOrderHistory(
     orderHistoryQuery,
     querySnapshot => {
       const orderHistory: Order[] = [];
-      querySnapshot.forEach(docSnap => {
+      querySnapshot.forEach((docSnap: { data: () => Order; id: string }) => {
         orderHistory.push({
           ...(docSnap.data() as Order),
           id: docSnap.id,
@@ -334,7 +334,7 @@ export function subscribeToDailySales(
     dailySalesQuery,
     querySnapshot => {
       const dailySales: Sales[] = [];
-      querySnapshot.forEach(docSnap => {
+      querySnapshot.forEach((docSnap: { data: () => Sales; id: string }) => {
         dailySales.push({
           ...(docSnap.data() as Sales),
           id: docSnap.id,
@@ -368,7 +368,7 @@ export function subscribeToMonthlySales(
     monthlySalesQuery,
     querySnapshot => {
       const monthlySales: Sales[] = [];
-      querySnapshot.forEach(docSnap => {
+      querySnapshot.forEach((docSnap: { data: () => Sales; id: string }) => {
         monthlySales.push({
           ...(docSnap.data() as Sales),
           id: docSnap.id,
