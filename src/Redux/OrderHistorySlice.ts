@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 export const orderHistorySlice = createSlice({
-  name: 'currentOrders',
+  name: 'liveOrders',
   initialState: {
     orders: [],
   },

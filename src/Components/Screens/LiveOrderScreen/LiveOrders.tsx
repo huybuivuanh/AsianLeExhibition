@@ -7,13 +7,13 @@ import {
 import { AlertType, OrderStatus, TimeFormat } from '../../../types/enum';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';
-import { useCurrentOrders } from '../../../Redux/hooks';
+import { useLiveOrders } from '../../../Redux/hooks';
 import { showAlert } from '../../../Notification/Alert';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
-const CurrentOrders = ({ navigation }: Props) => {
-  const currentOrders = useCurrentOrders().orders as Order[];
+const LiveOrders = ({ navigation }: Props) => {
+  const liveOrders = useLiveOrders().orders as Order[];
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
   const [loading] = useState(false);
 
@@ -42,7 +42,7 @@ const CurrentOrders = ({ navigation }: Props) => {
   return (
     <View className="flex-1 p-4 bg-white">
       <FlatList
-        data={currentOrders}
+        data={liveOrders}
         keyExtractor={(order, index) => order.id || index.toString()}
         renderItem={({ item }) => (
           <View className="bg-gray-100 rounded-xl mb-4 p-4 shadow-sm">
@@ -159,4 +159,4 @@ const CurrentOrders = ({ navigation }: Props) => {
   );
 };
 
-export default CurrentOrders;
+export default LiveOrders;

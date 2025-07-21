@@ -5,7 +5,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 
 import { MenuDataProvider } from './MenuDataProvider';
-import { CurrentOrderDataProvider } from './CurrentOrderDataProvider';
+import { LiveOrderDataProvider } from './LiveOrderDataProvider';
 import { OrderHistoryDataProvider } from './OrderHistoryDataProvider';
 import { SalesDataProvider } from './SalesDataProvider';
 
@@ -14,11 +14,11 @@ export const AppProviders = ({ children }: { children: React.ReactNode }) => (
     <GestureHandlerRootView>
       <NavigationContainer>
         <MenuDataProvider>
-          <CurrentOrderDataProvider>
+          <LiveOrderDataProvider>
             <OrderHistoryDataProvider>
               <SalesDataProvider>{children}</SalesDataProvider>
             </OrderHistoryDataProvider>
-          </CurrentOrderDataProvider>
+          </LiveOrderDataProvider>
         </MenuDataProvider>
       </NavigationContainer>
     </GestureHandlerRootView>

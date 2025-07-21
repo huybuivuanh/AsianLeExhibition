@@ -128,23 +128,23 @@ export function subscribeToMenuItems(onUpdate: any, onError: any) {
 // Current Orders Management
 
 // Subscribe to realtime updates of current orders
-export function subscribeToCurrentOrders(
+export function subscribeToLiveOrders(
   onUpdate: (orders: Order[]) => void,
   onError: (error: any) => void,
 ) {
-  const currentOrdersCollection = collection(db, 'currentOrders');
+  const liveOrdersCollection = collection(db, 'liveOrders');
 
   const unsubscribe = onSnapshot(
-    currentOrdersCollection,
+    liveOrdersCollection,
     querySnapshot => {
-      const currentOrders: Order[] = [];
+      const liveOrders: Order[] = [];
       querySnapshot.forEach((docSnap: { data: () => Order; id: string }) => {
-        currentOrders.push({
+        liveOrders.push({
           ...(docSnap.data() as Order),
           id: docSnap.id,
         });
       });
-      onUpdate(currentOrders);
+      onUpdate(liveOrders);
     },
     error => {
       console.error('Realtime update error:', error);
@@ -155,9 +155,9 @@ export function subscribeToCurrentOrders(
   return unsubscribe;
 }
 
-// Submit the current order to the 'currentOrders' collection
-export async function submitCurrentOrder(order: Order) {
-  const currentOrdersCollectionRef = collection(db, 'currentOrders');
+// Submit the current order to the 'liveOrders' collection
+export async function submitLiveOrder(order: Order) {
+  const liveOrdersCollectionRef = collection(db, 'liveOrders');
   const orderHistoryCollectionRef = collection(db, 'orderHistory');
   const orderNumberDocRef = doc(db, 'counters', 'orderNumber');
 
@@ -191,7 +191,7 @@ export async function submitCurrentOrder(order: Order) {
 
     // Save the order with the generated orderNumber
     // Generate a single Firestore doc ID
-    const newOrderDocRef = doc(currentOrdersCollectionRef);
+    const newOrderDocRef = doc(liveOrdersCollectionRef);
     await setDoc(newOrderDocRef, orderToBeSubmitted);
 
     const orderHistoryDocRef = doc(
@@ -238,7 +238,7 @@ export async function submitCurrentOrder(order: Order) {
 
 export async function completeOrder(orderID: string, status: OrderStatus) {
   try {
-    const orderDoc = doc(db, 'currentOrders', orderID);
+    const orderDoc = doc(db, 'liveOrders', orderID);
     const orderHistoryDoc = doc(db, 'orderHistory', orderID);
 
     await deleteDoc(orderDoc);
@@ -260,7 +260,7 @@ export async function updateOrder(order: Order) {
     throw new Error('Order id is required for update.');
   }
 
-  const currentOrdersDoc = doc(db, 'currentOrders', order.id);
+  const liveOrdersDoc = doc(db, 'liveOrders', order.id);
   const orderHistoryDoc = doc(db, 'orderHistory', order.id);
 
   const orderData = {
@@ -271,7 +271,7 @@ export async function updateOrder(order: Order) {
 
   try {
     await Promise.all([
-      updateDoc(currentOrdersDoc, orderData),
+      updateDoc(liveOrdersDoc, orderData),
       updateDoc(orderHistoryDoc, orderData),
     ]);
   } catch (error) {

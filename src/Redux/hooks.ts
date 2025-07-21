@@ -9,8 +9,8 @@ export const useOrder = () => {
   return useSelector((state: RootState) => state.order);
 };
 
-export const useCurrentOrders = () => {
-  return useSelector((state: RootState) => state.currentOrders);
+export const useLiveOrders = () => {
+  return useSelector((state: RootState) => state.liveOrders);
 };
 
 export const useOrderHistory = () => {

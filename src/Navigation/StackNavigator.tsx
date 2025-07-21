@@ -7,8 +7,8 @@ import EditMenuItem from '../Components/Screens/MenuScreen/EditMenuItem';
 
 import { RootStackParamList } from '../Navigation/RootStackParamList';
 import { RouteName } from '../types/enum';
-import EditOrder from '../Components/Screens/CurrentOrderScreen/EditOrder';
-import AddItemToOrder from '../Components/Screens/CurrentOrderScreen/AddItemToOrder';
+import EditOrder from '../Components/Screens/LiveOrderScreen/EditOrder';
+import AddItemToOrder from '../Components/Screens/LiveOrderScreen/AddItemToOrder';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

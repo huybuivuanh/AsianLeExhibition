@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import OrderReducer from './OrderSlice';
 import MenuReducer from './MenuSlice';
-import CurrentOrdersReducer from './CurrentOrderSlice';
+import LiveOrdersReducer from './LiveOrderSlice';
 import OrderHistoryReducer from './OrderHistorySlice';
 import SalesReducer from './SalesSlice';
 
@@ -9,7 +9,7 @@ export const Store = configureStore({
   reducer: {
     menu: MenuReducer,
     order: OrderReducer,
-    currentOrders: CurrentOrdersReducer,
+    liveOrders: LiveOrdersReducer,
     orderHistory: OrderHistoryReducer,
     sales: SalesReducer,
   },

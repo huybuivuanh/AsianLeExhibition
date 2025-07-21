@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addItem, removeItem, clearOrder } from '../../../Redux/OrderSlice';
-import { submitCurrentOrder } from '../../../DataManagement/DataManager';
+import { submitLiveOrder } from '../../../DataManagement/DataManager';
 import { useNavigation } from '@react-navigation/native';
 import { useOrder } from '../../../Redux/hooks';
 import { showAlert } from '../../../Notification/Alert';
@@ -55,7 +55,7 @@ const Cart = () => {
             className="bg-blue-600 py-3 rounded-xl items-center mb-3"
             onPress={() => {
               try {
-                submitCurrentOrder(order);
+                submitLiveOrder(order);
                 dispatch(clearOrder());
                 showAlert(AlertType.Success, 'Order submitted');
               } catch (error) {
