@@ -60,7 +60,7 @@ const LiveOrders = ({ navigation }: Props) => {
               </View>
 
               <View
-                className={`px-2 py-1 rounded-full ${
+                className={`p-3 rounded-full ${
                   item.status === OrderStatus.InProgress
                     ? 'bg-blue-100'
                     : item.status === OrderStatus.Canceled
@@ -80,14 +80,20 @@ const LiveOrders = ({ navigation }: Props) => {
                   {item.status}
                 </Text>
               </View>
-              <TouchableOpacity
-                className="bg-orange-500 px-4 py-2 rounded-full"
-                onPress={() => {
-                  navigation.navigate('EditOrder', { order: item });
-                }}
+
+              <View
+                className={`p-3 rounded-full ${
+                  item.printed ? 'bg-green-100' : 'bg-red-200'
+                }`}
               >
-                <Text className="text-white font-semibold">Edit</Text>
-              </TouchableOpacity>
+                <Text
+                  className={`text-xs font-medium ${
+                    item.printed ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
+                  {item.printed ? 'Printed' : 'Not Printed'}
+                </Text>
+              </View>
             </TouchableOpacity>
 
             {expandedOrderId === item.id && (
@@ -124,6 +130,15 @@ const LiveOrders = ({ navigation }: Props) => {
                     }}
                   >
                     <Text className="text-white font-semibold">Done</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="bg-orange-500 px-4 py-2 rounded-full"
+                    onPress={() => {
+                      navigation.navigate('EditOrder', { order: item });
+                    }}
+                  >
+                    <Text className="text-white font-semibold">Edit</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity

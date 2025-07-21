@@ -6,6 +6,7 @@ const initialOrder: Order = {
   total: 0,
   numberOfItems: 0,
   status: OrderStatus.Pending,
+  printed: false,
 };
 
 export const orderSlice = createSlice({

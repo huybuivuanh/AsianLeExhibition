@@ -22,6 +22,7 @@ declare global {
     total: number;
     numberOfItems: number;
     status: OrderStatus;
+    printed: boolean;
     created?: string;
   };
 

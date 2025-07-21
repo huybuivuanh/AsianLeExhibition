@@ -160,6 +160,7 @@ export async function submitLiveOrder(order: Order) {
       total: order.total,
       numberOfItems: order.numberOfItems,
       status: OrderStatus.InProgress,
+      printed: false,
       created: new Date().toISOString(),
     };
 
