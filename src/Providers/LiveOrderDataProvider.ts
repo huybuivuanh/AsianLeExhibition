@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  subscribeToLiveOrders,
-  sortOrders,
-} from '../DataManagement/DataManager';
+import { subscribeToLiveOrders } from '../DataManagement/DataManager';
+import { sortOrders } from '../DataManagement/utils';
 import { setLiveOrders } from '../Redux/LiveOrderSlice';
 
 export const LiveOrderDataProvider = ({

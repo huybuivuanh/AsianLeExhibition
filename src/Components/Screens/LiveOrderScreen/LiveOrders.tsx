@@ -1,9 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import {
-  completeOrder,
-  formattedDate,
-} from '../../../DataManagement/DataManager';
+import { completeOrder } from '../../../DataManagement/DataManager';
+import { formattedDate } from '../../../DataManagement/utils';
 import { AlertType, OrderStatus, TimeFormat } from '../../../types/enum';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../../Navigation/RootStackParamList';

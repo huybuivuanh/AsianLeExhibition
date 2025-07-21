@@ -1,6 +1,6 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { formattedDate } from '../../DataManagement/DataManager';
+import { formattedDate } from '../../DataManagement/utils';
 import { TimeFormat } from '../../types/enum';
 import { useSales } from '../../Redux/hooks';
 

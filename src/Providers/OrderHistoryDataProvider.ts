@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  subscribeToOrderHistory,
-  sortOrders,
-} from '../DataManagement/DataManager';
+import { subscribeToOrderHistory } from '../DataManagement/DataManager';
+import { sortOrders } from '../DataManagement/utils';
 import { setOrderHistory } from '../Redux/OrderHistorySlice';
 
 export const OrderHistoryDataProvider = ({

@@ -4,8 +4,8 @@ import {
   subscribeToDailySales,
   subscribeToMonthlySales,
   subscribeToTotalSales,
-  sortSales,
 } from '../DataManagement/DataManager';
+import { sortSales } from '../DataManagement/utils';
 import {
   setDailySales,
   setMonthlySales,
