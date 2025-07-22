@@ -242,6 +242,8 @@ export async function updateOrder(order: Order) {
     orderItems: order.orderItems,
     total: order.total,
     numberOfItems: order.numberOfItems,
+    status: order.status,
+    printed: order.printed,
   };
 
   try {

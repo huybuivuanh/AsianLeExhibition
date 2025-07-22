@@ -1,6 +1,9 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
-import { completeOrder } from '../../../DataManagement/DataManager';
+import {
+  completeOrder,
+  updateOrder,
+} from '../../../DataManagement/DataManager';
 import { formattedDate } from '../../../DataManagement/utils';
 import { AlertType, OrderStatus, TimeFormat } from '../../../types/enum';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -139,6 +142,23 @@ const LiveOrders = ({ navigation }: Props) => {
                     }}
                   >
                     <Text className="text-white font-semibold">Edit</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    className="bg-blue-500 px-4 py-2 rounded-full"
+                    onPress={() => {
+                      if (item.id) {
+                        const updatedOrder = { ...item, printed: false };
+                        updateOrder(updatedOrder);
+                      } else {
+                        showAlert(
+                          AlertType.Error,
+                          'Error: Order number is missing.',
+                        );
+                      }
+                    }}
+                  >
+                    <Text className="text-white font-semibold">Print</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
