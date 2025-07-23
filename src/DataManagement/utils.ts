@@ -8,7 +8,7 @@ export const formattedDate = (isoString: string, timeFormat: TimeFormat) => {
   if (timeFormat === TimeFormat.OnlyTime) return date.toFormat('HH:mm');
   if (timeFormat === TimeFormat.OnlyDate) return date.toFormat('yyyy/MM/dd');
   if (timeFormat === TimeFormat.OnlyMonth) return date.toFormat('yyyy/MM');
-  return date.toFormat('yyyy/MM/dd HH:mm');
+  return date.toFormat('yyyy/MM/dd  -  HH:mm');
 };
 
 export const sortOrders = (orders: Order[]) => {
